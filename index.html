@@ -55,7 +55,7 @@
                 <div class="bg-indigo-600 p-2 rounded-lg text-white">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Baseado no Guia de Interpretação ARSM</span></h1>
+                <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Análise de Relatório Multidisciplinar</span></h1>
             </div>
             <div class="flex gap-3">
                 <button onclick="toggleSettings()" class="text-slate-400 hover:text-indigo-600 transition-all p-2 bg-white rounded-full shadow-sm" title="Configurar Chave API">
@@ -99,16 +99,16 @@
                 </section>
 
                 <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-2">2. Base Documental (Avaliações)</h2>
-                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Carregue a avaliação sensorial/TO ou PEI</p>
+                    <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-2">2. Relatório Multidisciplinar</h2>
+                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Anexar avaliação completa (Vineland, SPM, ARSM)</p>
                     
                     <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-400 transition-all mb-4 bg-slate-50/50">
-                        <i class="fas fa-file-upload text-indigo-300 text-3xl mb-2"></i>
-                        <p class="text-[10px] text-slate-500 font-bold uppercase">Arraste DOCX/TXT aqui</p>
+                        <i class="fas fa-file-medical-alt text-indigo-300 text-3xl mb-2"></i>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">Arraste o Relatório Aqui<br>(DOCX ou TXT)</p>
                         <input type="file" id="fileInput" class="hidden" accept=".docx,.txt">
                     </div>
 
-                    <textarea id="evaluationContent" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" rows="5" placeholder="Ou cole o perfil sensorial e gatilhos aqui..."></textarea>
+                    <textarea id="evaluationContent" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" rows="5" placeholder="Ou cole o conteúdo do relatório aqui. A IA buscará automaticamente dados de Vineland, Perfil Sensorial e ARSM."></textarea>
                     <div id="fileOk" class="hidden mt-2 flex items-center gap-2 text-[10px] text-emerald-600 font-bold uppercase">
                         <i class="fas fa-check-circle"></i> Documento Carregado
                     </div>
@@ -140,7 +140,7 @@
                     </div>
 
                     <button id="btnGenerate" class="w-full mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-indigo-100">
-                        <span id="btnTxt">Gerar Protocolo de Conduta</span>
+                        <span id="btnTxt">Gerar Protocolo Integrado</span>
                         <div id="btnSpinner" class="hidden loading-spinner"></div>
                     </button>
                 </section>
@@ -156,7 +156,7 @@
                     <div class="flex justify-between items-start mb-10 relative">
                         <div>
                             <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Protocolo de Regulação e Manejo</span>
-                            <h2 class="text-3xl font-extrabold text-slate-900 leading-none mt-1">Plano Individualizado</h2>
+                            <h2 class="text-3xl font-extrabold text-slate-900 leading-none mt-1">Plano Individualizado Integrado</h2>
                             <p class="text-sm text-slate-400 mt-2 font-medium">Paciente: <span id="outName" class="text-slate-800 underline decoration-indigo-300 decoration-2 underline-offset-4 font-bold uppercase tracking-tight">---</span></p>
                         </div>
                         <button onclick="window.print()" class="no-print bg-slate-50 text-slate-400 hover:text-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center transition-all">
@@ -209,7 +209,7 @@
                                 <tr>
                                     <td colspan="2" class="px-6 py-20 text-center text-slate-300 italic text-sm">
                                         <i class="fas fa-brain text-3xl mb-4 block opacity-20"></i>
-                                        Carregue a avaliação sensorial/comportamental para gerar estratégias de co-regulação.
+                                        Anexe o relatório multidisciplinar para gerar estratégias de co-regulação integradas.
                                     </td>
                                 </tr>
                             </tbody>
@@ -363,13 +363,13 @@
                 return;
             }
 
-            btnTxt.innerText = "Processando Protocolo...";
+            btnTxt.innerText = "Processando Análise Integrada...";
             btnSpinner.classList.remove('hidden');
             btnGenerate.disabled = true;
             closeError();
 
-            // SYSTEM PROMPT: BASEADO NO GUIA ARSM
-            const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico seguindo estritamente o "Guia de Interpretação ARSM".
+            // SYSTEM PROMPT: BASEADO NO GUIA ARSM E INTEGRAÇÃO DE AVALIAÇÕES
+            const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico.
             
             DIRETRIZES DE ESTILO:
             1. SEJA CLARO E OBJETIVO: Use verbos no imperativo e listas.
@@ -380,44 +380,30 @@
             - PROIBIDO sugerir intervenções de contenção física ou restrição de movimento forçada.
             - Em situações de crise (Nível 5), priorize: segurança do ambiente, retirada de estímulos, proteção física (barreiras moles, afastamento de objetos) e co-regulação.
 
-            BASE DE CONHECIMENTO (GUIA ARSM):
-            Utilize as seguintes correlações para gerar condutas específicas se os comportamentos forem identificados na avaliação:
+            BASE DE CONHECIMENTO INTEGRADA:
+            Você deve cruzar os dados do RELATÓRIO MULTIDISCIPLINAR (que pode conter Vineland, SPM, ARSM, Perfil Sensorial) com o Guia ARSM para gerar condutas personalizadas.
             
-            1. PRÁXIS (Planejamento Motor):
-               - Se dificuldade em subir/descer equipamentos ou desiste: Dar modelos funcionais, usar reforço diferencial, visuais com passo a passo, dividir tarefa em partes menores.
-            
-            2. SISTEMA ORAL:
-               - Busca Oral (lambe, morde): Oferecer alternativas seguras (mordedores, canudos) e ensinar autorregulação.
-               - Hiper Oral (baba, náusea): Evitar estímulos, usar histórias narrativas para resolução de problemas.
-            
-            3. SISTEMA AUDITIVO:
-               - Hiporresposta (não ouve): Usar estímulos intensos, parear com reforçadores visuais.
-               - Hiperresposta (tapa ouvido, medo): Dar controle do som à criança, parear som baixo com reforço, apoio visual, fones de proteção se necessário.
-            
-            4. SISTEMA PROPRIOCEPTIVO (Força/Corpo):
-               - Busca (empurra, bate): Ofertar "trabalho pesado" funcional (empurrar/puxar), itens de resistência.
-               - Fraqueza (falha em carrinho de mão/escalada): Suporte físico proximal, adaptar carga, reforçar core.
-               - Falta de graduação de força: Atividades de controle (apertar balão sem estourar), feedback visual.
-            
-            5. SISTEMA TÁTIL:
-               - Hiporresposta (não sente toque leve/firme): Usar dicas visuais, aumentar intensidade do toque (tato profundo), ressaltar estímulo.
-               - Hiperresposta (afasta, limpa o local, incomoda com etiqueta): Respeitar limites, evitar toque surpresa, dar previsibilidade, usar toque firme (pressão) ao invés de leve.
-            
-            6. SISTEMA VISUAL:
-               - Hiperresposta (foge da luz, pisca): Ajustar ângulo/intensidade, óculos escuros/boné, pausas visuais, cabana.
-               - Hiporresposta/Busca (olha de lado, passa objeto na frente): Ofertar estímulos visuais funcionais, reforçar atenção compartilhada.
-            
-            7. SISTEMA VESTIBULAR (Movimento):
-               - Busca (gira, pula muito): Ofertar movimento funcional planejado (pausas ativas), assentos dinâmicos.
-               - Insegurança Gravitacional (medo de tirar pé do chão/instabilidade): Dar apoio firme, previsibilidade, nunca forçar, começar no chão firme.
+            1. INTEGRAÇÃO DE DADOS (Buscar no texto do relatório):
+               - Se VINELAND indicar baixa comunicação expressiva + ARSM mostrar desregulação: Priorizar suporte visual e comunicação alternativa nos níveis 2 e 3.
+               - Se SPM/PERFIL SENSORIAL indicar hipersensibilidade (Auditiva/Tátil/Visual) + ARSM mostrar fuga/esquiva: A conduta deve focar na redução do estímulo aversivo específico identificado no SPM.
+               - Se ARSM mostrar busca vestibular/proprioceptiva + SPM confirmar busca sensorial: Intensificar "trabalho pesado" e pausas ativas funcionais.
+
+            2. GUIA ARSM (Referência de Condutas se identificado na avaliação):
+               - PRÁXIS: Dificuldade motora -> Modelos, reforço diferencial, passo a passo visual.
+               - SISTEMA ORAL: Busca -> Mordedores/canudos. Hiper -> Evitar estímulos, histórias sociais.
+               - AUDITIVO: Hipo -> Estímulos intensos. Hiper -> Controle do som, fones, previsibilidade.
+               - PROPRIOCEPTIVO: Busca -> Trabalho pesado. Fraqueza -> Suporte proximal.
+               - TÁTIL: Hipo -> Dicas visuais, tato profundo. Hiper -> Respeitar limites, toque firme (não leve), previsibilidade.
+               - VISUAL: Hiper -> Óculos, cabana, ajustar luz. Hipo -> Estímulos visuais intensos/funcionais.
+               - VESTIBULAR: Busca -> Movimento funcional. Insegurança -> Apoio firme, chão.
 
             TAREFA:
-            Analise a AVALIAÇÃO (busque os padrões acima) e os SINAIS DA CURVA.
-            Gere um protocolo prático mapeando as estratégias do Guia ARSM para cada nível de alerta.
+            Analise o RELATÓRIO COMPLETO e os SINAIS DA CURVA.
+            Gere um protocolo prático integrando essas descobertas.
             
             Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
-            const userPrompt = `AVALIAÇÃO/PERFIL SENSORIAL:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS NA CURVA:\nN5 (Pico): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
+            const userPrompt = `RELATÓRIO MULTIDISCIPLINAR:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS NA CURVA:\nN5 (Pico): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
 
             try {
                 const data = await callGemini({
@@ -432,7 +418,7 @@
                 errorMsg.innerText = err.message;
                 errorBox.classList.remove('hidden');
             } finally {
-                btnTxt.innerText = "Gerar Protocolo de Conduta";
+                btnTxt.innerText = "Gerar Protocolo Integrado";
                 btnSpinner.classList.add('hidden');
                 btnGenerate.disabled = false;
             }
