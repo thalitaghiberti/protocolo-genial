@@ -53,17 +53,28 @@
                 <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Baseado em Neurobiologia e Sensorial</span></h1>
             </div>
             <div class="flex gap-3">
-                <button onclick="toggleSettings()" class="text-slate-400 hover:text-indigo-600 transition-all p-2 bg-white rounded-full shadow-sm">
-                    <i class="fas fa-cog"></i>
+                <button onclick="toggleSettings()" class="text-slate-400 hover:text-indigo-600 transition-all p-2 bg-white rounded-full shadow-sm" title="Configurar Chave API">
+                    <i class="fas fa-key"></i>
                 </button>
             </div>
         </nav>
 
         <!-- Painel de Configurações (Escondido) -->
-        <div id="settingsPanel" class="hidden no-print mb-6 p-4 bg-indigo-900 text-white rounded-xl shadow-inner">
-            <h3 class="text-xs font-bold uppercase mb-2">Configurações da API</h3>
-            <p class="text-[10px] opacity-70 mb-3">Insira a sua chave do Google AI Studio para activar a inteligência artificial fora deste ambiente.</p>
-            <input type="password" id="customApiKey" placeholder="Chave de API do Gemini..." class="w-full p-2 bg-indigo-800 border border-indigo-700 rounded text-sm text-white placeholder-indigo-400 outline-none">
+        <div id="settingsPanel" class="hidden no-print mb-6 p-6 bg-indigo-900 text-white rounded-xl shadow-inner relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-lock text-6xl"></i></div>
+            <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Configuração de Acesso (Obrigatório)</h3>
+            <p class="text-xs opacity-80 mb-4 max-w-lg">Para a ferramenta funcionar, você precisa inserir sua chave gratuita do Google AI Studio abaixo. <br><strong>Ela ficará salva no seu navegador para os próximos acessos.</strong></p>
+            
+            <div class="flex gap-2 max-w-2xl">
+                <input type="password" id="customApiKey" placeholder="Cole sua chave API aqui (começa com AIza...)" class="flex-1 p-3 bg-indigo-950/50 border border-indigo-700 rounded-lg text-sm text-white placeholder-indigo-400 outline-none focus:border-indigo-400 transition-all">
+                <button onclick="saveApiKey()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg text-xs font-bold transition-all shadow-lg flex items-center gap-2">
+                    SALVAR <i class="fas fa-save"></i>
+                </button>
+            </div>
+            <p id="keyStatus" class="text-[10px] text-emerald-400 mt-2 font-bold hidden flex items-center gap-1"><i class="fas fa-check-circle"></i> Chave salva e pronta para uso!</p>
+            <div class="mt-4 pt-4 border-t border-indigo-800/50 text-[10px] opacity-50">
+                Problemas para gerar a chave? Tente usar um e-mail pessoal (@gmail.com) em vez de corporativo. <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline hover:text-white">Gerar chave agora</a>
+            </div>
         </div>
 
         <!-- Mensagens de Erro -->
@@ -228,6 +239,29 @@
         const errorBox = document.getElementById('errorBox');
         const errorMsg = document.getElementById('errorMsg');
         const settingsPanel = document.getElementById('settingsPanel');
+        const customApiKeyInput = document.getElementById('customApiKey');
+        const keyStatus = document.getElementById('keyStatus');
+
+        // Inicialização: Tentar carregar a chave do LocalStorage
+        window.addEventListener('load', () => {
+            const savedKey = localStorage.getItem('geminiApiKey');
+            if (savedKey) {
+                customApiKeyInput.value = savedKey;
+            } else {
+                // Se não tiver chave, abre o painel de configurações automaticamente para orientar o usuário
+                toggleSettings();
+            }
+        });
+
+        // Função para Salvar Chave
+        function saveApiKey() {
+            const key = customApiKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('geminiApiKey', key);
+                keyStatus.classList.remove('hidden');
+                setTimeout(() => keyStatus.classList.add('hidden'), 3000);
+            }
+        }
 
         // Toggle Settings
         function toggleSettings() { settingsPanel.classList.toggle('hidden'); }
@@ -270,7 +304,15 @@
 
         // Chamada API com Retry
         async function callGemini(payload, retries = 5) {
-            const currentKey = document.getElementById('customApiKey').value || BASE_API_KEY;
+            // Ordem de prioridade: Chave no Input > Chave Salva no Navegador > Chave Fixa no Código
+            const currentKey = customApiKeyInput.value || localStorage.getItem('geminiApiKey') || BASE_API_KEY;
+            
+            if (!currentKey) {
+                // Abre o painel de configurações e lança erro
+                settingsPanel.classList.remove('hidden');
+                throw new Error("⚠️ É necessário inserir uma Chave de API para a ferramenta funcionar. Veja as instruções acima.");
+            }
+
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${currentKey}`;
             
             let delay = 1000;
@@ -281,9 +323,20 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
+                    
                     if (response.ok) return await response.json();
+                    
+                    // Se a resposta for erro, tenta ler o erro para dar dicas
+                    const errData = await response.json().catch(() => ({}));
+                    if (response.status === 400 || response.status === 403) {
+                        throw new Error("Chave de API inválida ou expirada. Por favor, gere uma nova no Google AI Studio.");
+                    }
+                    
                     if (response.status !== 429 && response.status < 500) break;
-                } catch (e) { if (i === retries - 1) throw e; }
+                } catch (e) { 
+                    if (e.message.includes("inválida")) throw e; // Não tenta de novo se a chave for ruim
+                    if (i === retries - 1) throw e; 
+                }
                 await new Promise(r => setTimeout(r, delay));
                 delay *= 2;
             }
