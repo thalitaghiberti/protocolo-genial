@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo de Manejo: Curva de Aceleração</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .print-container { width: 100%; max-width: 100%; box-shadow: none; border: none; }
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border-left-color: #fff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #drop-zone.drag-over {
+            background-color: #eef2ff;
+            border-color: #4f46e5;
+        }
+
+        .behavior-text { font-size: 10px; font-weight: 700; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <div class="max-w-6xl mx-auto py-8 px-4">
+        
+        <!-- Navbar / Config -->
+        <nav class="flex justify-between items-center mb-8 no-print">
+            <div class="flex items-center gap-2">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Baseado em Neurobiologia e Sensorial</span></h1>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="toggleSettings()" class="text-slate-400 hover:text-indigo-600 transition-all p-2 bg-white rounded-full shadow-sm">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Painel de Configurações (Escondido) -->
+        <div id="settingsPanel" class="hidden no-print mb-6 p-4 bg-indigo-900 text-white rounded-xl shadow-inner">
+            <h3 class="text-xs font-bold uppercase mb-2">Configurações da API</h3>
+            <p class="text-[10px] opacity-70 mb-3">Insira a sua chave do Google AI Studio para activar a inteligência artificial fora deste ambiente.</p>
+            <input type="password" id="customApiKey" placeholder="Chave de API do Gemini..." class="w-full p-2 bg-indigo-800 border border-indigo-700 rounded text-sm text-white placeholder-indigo-400 outline-none">
+        </div>
+
+        <!-- Mensagens de Erro -->
+        <div id="errorBox" class="hidden no-print mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorMsg" class="text-sm font-medium"></span>
+            </div>
+            <button onclick="closeError()"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Painel Lateral de Entrada -->
+            <aside class="lg:col-span-4 space-y-6 no-print">
+                
+                <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4">1. Identificação</h2>
+                    <input type="text" id="studentName" oninput="syncName()" placeholder="Nome" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium">
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-2">2. Base Documental (Avaliações)</h2>
+                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Carregue a avaliação sensorial/TO ou PEI</p>
+                    
+                    <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-400 transition-all mb-4 bg-slate-50/50">
+                        <i class="fas fa-file-upload text-indigo-300 text-3xl mb-2"></i>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">Arraste DOCX/TXT aqui</p>
+                        <input type="file" id="fileInput" class="hidden" accept=".docx,.txt">
+                    </div>
+
+                    <textarea id="evaluationContent" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" rows="5" placeholder="Ou cole o perfil sensorial e gatilhos aqui..."></textarea>
+                    <div id="fileOk" class="hidden mt-2 flex items-center gap-2 text-[10px] text-emerald-600 font-bold uppercase">
+                        <i class="fas fa-check-circle"></i> Documento Carregado
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4">3. Sinais Observados</h2>
+                    <div class="space-y-4">
+                        <div class="group">
+                            <label class="block text-[9px] font-black text-red-600 uppercase mb-1">Nível 5 - Crise (Luta/Fuga)</label>
+                            <input type="text" id="inLv5" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-red-600 outline-none transition-all text-sm" placeholder="Ex: Agredir o outro, congelamento">
+                        </div>
+                        <div class="group">
+                            <label class="block text-[9px] font-black text-orange-500 uppercase mb-1">Nível 4 - Aceleração</label>
+                            <input type="text" id="inLv4" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-orange-500 outline-none transition-all text-sm" placeholder="Ex: Gritos, fuga de demanda">
+                        </div>
+                        <div class="group">
+                            <label class="block text-[9px] font-black text-yellow-600 uppercase mb-1">Nível 3 - Agitação</label>
+                            <input type="text" id="inLv3" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-yellow-600 outline-none transition-all text-sm" placeholder="Ex: Recusa, aumento motor">
+                        </div>
+                        <div class="group">
+                            <label class="block text-[9px] font-black text-emerald-500 uppercase mb-1">Nível 2 - Gatilho (Alerta)</label>
+                            <input type="text" id="inLv2" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-500 outline-none transition-all text-sm" placeholder="Ex: Estereotipias aumentadas">
+                        </div>
+                        <div class="group">
+                            <label class="block text-[9px] font-black text-emerald-700 uppercase mb-1">Nível 1 - Calma (Regulado)</label>
+                            <input type="text" id="inLv1" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-700 outline-none transition-all text-sm" placeholder="Ex: Engajado, interativo">
+                        </div>
+                    </div>
+
+                    <button id="btnGenerate" class="w-full mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-indigo-100">
+                        <span id="btnTxt">Gerar Protocolo de Conduta</span>
+                        <div id="btnSpinner" class="hidden loading-spinner"></div>
+                    </button>
+                </section>
+            </aside>
+
+            <!-- Visualização do Protocolo -->
+            <main class="lg:col-span-8 print-container">
+                <div id="finalReport" class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 min-h-full relative overflow-hidden">
+                    
+                    <!-- Decorative Element -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-16 -mt-16 no-print"></div>
+
+                    <div class="flex justify-between items-start mb-10 relative">
+                        <div>
+                            <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Protocolo de Regulação e Manejo</span>
+                            <h2 class="text-3xl font-extrabold text-slate-900 leading-none mt-1">Plano Individualizado</h2>
+                            <p class="text-sm text-slate-400 mt-2 font-medium">Paciente: <span id="outName" class="text-slate-800 underline decoration-indigo-300 decoration-2 underline-offset-4 font-bold uppercase tracking-tight">---</span></p>
+                        </div>
+                        <button onclick="window.print()" class="no-print bg-slate-50 text-slate-400 hover:text-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center transition-all">
+                            <i class="fas fa-print text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Gráfico da Curva -->
+                    <div class="mb-12 bg-slate-50 p-6 rounded-2xl border border-slate-100 relative">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-md">Curva de Intensidade</div>
+                        <div class="h-64 mt-4">
+                            <svg viewBox="0 0 800 300" class="w-full h-full">
+                                <!-- Zonas de Cor -->
+                                <rect x="0" y="0" width="800" height="60" fill="#fee2e2" fill-opacity="0.4" />
+                                <rect x="0" y="60" width="800" height="60" fill="#ffedd5" fill-opacity="0.4" />
+                                <rect x="0" y="120" width="800" height="60" fill="#fef9c3" fill-opacity="0.4" />
+                                <rect x="0" y="180" width="800" height="60" fill="#ecfdf5" fill-opacity="0.4" />
+                                <rect x="0" y="240" width="800" height="60" fill="#f0fdf4" fill-opacity="0.4" />
+
+                                <!-- Linha da Curva -->
+                                <path d="M 50 270 Q 150 270 300 150 T 650 30" fill="none" stroke="#4338ca" stroke-width="5" stroke-linecap="round" />
+
+                                <!-- Pontos dos Níveis -->
+                                <circle cx="50" cy="270" r="8" fill="#15803d" stroke="#fff" stroke-width="2" />
+                                <circle cx="200" cy="230" r="8" fill="#22c55e" stroke="#fff" stroke-width="2" />
+                                <circle cx="350" cy="150" r="8" fill="#eab308" stroke="#fff" stroke-width="2" />
+                                <circle cx="500" cy="80" r="8" fill="#f97316" stroke="#fff" stroke-width="2" />
+                                <circle cx="650" cy="30" r="8" fill="#ef4444" stroke="#fff" stroke-width="2" />
+
+                                <!-- Textos Dinâmicos -->
+                                <text x="65" y="275" id="outLv1" class="behavior-text" fill="#15803d">N1: Calma</text>
+                                <text x="215" y="235" id="outLv2" class="behavior-text" fill="#22c55e">N2: Gatilho</text>
+                                <text x="365" y="155" id="outLv3" class="behavior-text" fill="#ca8a04">N3: Agitação</text>
+                                <text x="515" y="85" id="outLv4" class="behavior-text" fill="#ea580c">N4: Aceleração</text>
+                                <text x="665" y="35" id="outLv5" class="behavior-text" fill="#b91c1c">N5: Crise</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Protocolo -->
+                    <div class="overflow-hidden rounded-2xl border border-slate-100 shadow-sm">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead class="bg-indigo-950">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-200 uppercase tracking-widest">Nível / Fase</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-100 uppercase tracking-widest bg-indigo-900">Conduta de Co-Regulação e Manejo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="protocolContent" class="bg-white divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="2" class="px-6 py-20 text-center text-slate-300 italic text-sm">
+                                        <i class="fas fa-brain text-3xl mb-4 block opacity-20"></i>
+                                        Carregue a avaliação sensorial/comportamental para gerar estratégias de co-regulação.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="mt-12 pt-6 border-t border-slate-50 text-[10px] text-slate-400 text-center font-medium">
+                        Baseado no modelo de Curva de Aceleração com ênfase em Neurobiologia e Integração Sensorial.
+                    </footer>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Configuração da API
+        const BASE_API_KEY = ""; 
+        const MODEL = "gemini-2.5-flash-preview-09-2025";
+        
+        // Elementos UI
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('fileInput');
+        const evaluationText = document.getElementById('evaluationContent');
+        const fileOk = document.getElementById('fileOk');
+        const btnGenerate = document.getElementById('btnGenerate');
+        const btnTxt = document.getElementById('btnTxt');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const protocolContent = document.getElementById('protocolContent');
+        const errorBox = document.getElementById('errorBox');
+        const errorMsg = document.getElementById('errorMsg');
+        const settingsPanel = document.getElementById('settingsPanel');
+
+        // Toggle Settings
+        function toggleSettings() { settingsPanel.classList.toggle('hidden'); }
+        function closeError() { errorBox.classList.add('hidden'); }
+
+        // Sincronização de Texto
+        function syncName() { document.getElementById('outName').innerText = document.getElementById('studentName').value || "---"; }
+        
+        function updateGraph() {
+            document.getElementById('outLv1').textContent = `N1: ${document.getElementById('inLv1').value || 'Calma'}`;
+            document.getElementById('outLv2').textContent = `N2: ${document.getElementById('inLv2').value || 'Gatilho'}`;
+            document.getElementById('outLv3').textContent = `N3: ${document.getElementById('inLv3').value || 'Agitação'}`;
+            document.getElementById('outLv4').textContent = `N4: ${document.getElementById('inLv4').value || 'Aceleração'}`;
+            document.getElementById('outLv5').textContent = `N5: ${document.getElementById('inLv5').value || 'Crise'}`;
+        }
+
+        // Lógica de Ficheiros
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('drag-over');
+        dropZone.ondrop = (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); };
+        fileInput.onchange = (e) => handleFiles(e.target.files);
+
+        function handleFiles(files) {
+            const file = files[0];
+            if (!file) return;
+            if (file.name.endsWith('.docx')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    mammoth.extractRawText({ arrayBuffer: e.target.result })
+                        .then(res => { evaluationText.value = res.value; fileOk.classList.remove('hidden'); });
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = (e) => { evaluationText.value = e.target.result; fileOk.classList.remove('hidden'); };
+                reader.readAsText(file);
+            }
+        }
+
+        // Chamada API com Retry
+        async function callGemini(payload, retries = 5) {
+            const currentKey = document.getElementById('customApiKey').value || BASE_API_KEY;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${currentKey}`;
+            
+            let delay = 1000;
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) return await response.json();
+                    if (response.status !== 429 && response.status < 500) break;
+                } catch (e) { if (i === retries - 1) throw e; }
+                await new Promise(r => setTimeout(r, delay));
+                delay *= 2;
+            }
+            throw new Error("A IA excedeu o limite ou está ocupada. Tenta novamente em segundos.");
+        }
+
+        // Gerar Protocolo
+        btnGenerate.onclick = async () => {
+            const student = document.getElementById('studentName').value || "Aluno";
+            const evaluation = evaluationText.value;
+            const behaviors = {
+                l5: document.getElementById('inLv5').value,
+                l4: document.getElementById('inLv4').value,
+                l3: document.getElementById('inLv3').value,
+                l2: document.getElementById('inLv2').value,
+                l1: document.getElementById('inLv1').value
+            };
+
+            if (!behaviors.l5 || !behaviors.l1) {
+                errorMsg.innerText = "Define pelo menos os comportamentos de Nível 1 e 5.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            btnTxt.innerText = "Processando Neurobiologia...";
+            btnSpinner.classList.remove('hidden');
+            btnGenerate.disabled = true;
+            closeError();
+
+            // SYSTEM PROMPT ATUALIZADO COM UNIVERSO VERBAL
+            const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico e Regulação Emocional com a personalidade da marca GENIAL CARE.
+            
+            DIRETRIZES DE TOM DE VOZ (UNIVERSO VERBAL):
+            1. PERSONALIDADE: Seja empolgado (ative o melhor das pessoas), explicativo (compartilhe conhecimento de forma simples), habilidoso (valide com prática), acolhedor (crie ambiente confortável) e técnico (único e específico, mas acessível).
+            2. ESTILO DE ESCRITA:
+               - Use contrações permitidas: "pra", "né", "tá".
+               - Use "a gente" ou "nós" para gerar proximidade e pertencimento.
+               - Frases curtas e objetivas. Use listas e tópicos para facilitar.
+               - Evite clichês e gerundismo ("vamos estar fazendo" -> NÃO). Use gerúndio normal ("estamos fazendo").
+               - Termos técnicos gerais (autismo, intervenção, terapias) em minúscula. Produtos proprietários em Maiúscula.
+            3. EMPATIA E ACOLHIMENTO:
+               - Valide sentimentos. Use "Sentimos muito" em vez de "ops" ou "eita".
+               - Chame pelo nome quando possível (no contexto da conduta, use "a criança" ou o nome se fornecido).
+               - Use pronomes possessivos ("nosso", "sua") para destacar pertencimento.
+
+            BASE TEÓRICA MANDATÓRIA (NEUROBIOLOGIA):
+            1. O sistema nervoso busca segurança. Comportamentos de luta/fuga/congelamento ocorrem por percepção de ameaça.
+            2. CO-REGULAÇÃO: A criança precisa de um adulto calmo. Não exija auto-regulação na crise.
+            3. DIREITOS SENSORIAIS: Necessidades sensoriais são direitos, não recompensas.
+            4. PREVISIBILIDADE: Use suportes visuais e modelos para reduzir ansiedade.
+            5. COMUNICAÇÃO: Use a metáfora do "Velocímetro" (Corpo Rápido/Devagar).
+
+            TAREFA:
+            Com base na AVALIAÇÃO e SINAIS fornecidos, gere condutas práticas.
+            Escreva as condutas usando o tom de voz descrito acima (acolhedor, "a gente", "pra", explicativo).
+            
+            Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
+
+            const userPrompt = `AVALIAÇÃO/PERFIL SENSORIAL:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS:\nN5 (Crise): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
+
+            try {
+                const data = await callGemini({
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: { responseMimeType: "application/json" }
+                });
+
+                const conducts = JSON.parse(data.candidates[0].content.parts[0].text);
+                renderProtocol(behaviors, conducts);
+            } catch (err) {
+                errorMsg.innerText = err.message;
+                errorBox.classList.remove('hidden');
+            } finally {
+                btnTxt.innerText = "Gerar Protocolo de Conduta";
+                btnSpinner.classList.add('hidden');
+                btnGenerate.disabled = false;
+            }
+        };
+
+        function renderProtocol(behaviors, conducts) {
+            const levels = [
+                { id: 5, color: 'text-red-600', phase: 'Crise (Luta/Fuga)', beh: behaviors.l5, cond: conducts.n5 },
+                { id: 4, color: 'text-orange-500', phase: 'Aceleração', beh: behaviors.l4, cond: conducts.n4 },
+                { id: 3, color: 'text-yellow-600', phase: 'Agitação', beh: behaviors.l3, cond: conducts.n3 },
+                { id: 2, color: 'text-emerald-500', phase: 'Gatilho (Alerta)', beh: behaviors.l2, cond: conducts.n2 },
+                { id: 1, color: 'text-emerald-700', phase: 'Calma (Regulado)', beh: behaviors.l1, cond: conducts.n1 }
+            ];
+
+            protocolContent.innerHTML = levels.map(lv => `
+                <tr class="hover:bg-slate-50 transition-all">
+                    <td class="px-6 py-6 w-1/3 border-r border-slate-50">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black bg-slate-100 ${lv.color}">${lv.id}</span>
+                            <span class="text-[9px] font-black uppercase tracking-tighter text-slate-400">${lv.phase}</span>
+                        </div>
+                        <div class="text-xs font-semibold text-slate-700 italic bg-slate-50 p-3 rounded-xl border border-slate-100">${lv.beh || 'Não descrito'}</div>
+                    </td>
+                    <td class="px-6 py-6 text-sm text-slate-800 font-medium bg-indigo-50/10 leading-relaxed">
+                        ${lv.cond}
+                    </td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
