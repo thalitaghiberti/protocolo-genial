@@ -38,6 +38,11 @@
         }
 
         .behavior-text { font-size: 10px; font-weight: 700; }
+        
+        /* Estilo para listas dentro da tabela */
+        .conduta-list ul { list-style-type: disc; padding-left: 1.2em; margin-bottom: 0.5em; }
+        .conduta-list li { margin-bottom: 0.3em; }
+        .conduta-list strong { color: #3730a3; font-weight: 700; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
@@ -50,17 +55,16 @@
                 <div class="bg-indigo-600 p-2 rounded-lg text-white">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Baseado em Neurobiologia e Sensorial</span></h1>
+                <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Baseado no Guia de Interpretação ARSM</span></h1>
             </div>
-            <!-- Botão de configuração escondido pois a chave já está fixa -->
-            <div class="flex gap-3 opacity-0 hover:opacity-100 transition-opacity">
+            <div class="flex gap-3">
                 <button onclick="toggleSettings()" class="text-slate-400 hover:text-indigo-600 transition-all p-2 bg-white rounded-full shadow-sm" title="Configurar Chave API">
                     <i class="fas fa-key"></i>
                 </button>
             </div>
         </nav>
 
-        <!-- Painel de Configurações (Escondido por padrão) -->
+        <!-- Painel de Configurações (Escondido) -->
         <div id="settingsPanel" class="hidden no-print mb-6 p-6 bg-indigo-900 text-white rounded-xl shadow-inner relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-lock text-6xl"></i></div>
             <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Configuração de Acesso</h3>
@@ -162,7 +166,7 @@
 
                     <!-- Gráfico da Curva -->
                     <div class="mb-12 bg-slate-50 p-6 rounded-2xl border border-slate-100 relative">
-                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-md">Curva de Intensidade</div>
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-md">Curva de Aceleração</div>
                         <div class="h-64 mt-4">
                             <svg viewBox="0 0 800 300" class="w-full h-full">
                                 <!-- Zonas de Cor -->
@@ -359,41 +363,56 @@
                 return;
             }
 
-            btnTxt.innerText = "Processando Neurobiologia...";
+            btnTxt.innerText = "Processando Protocolo...";
             btnSpinner.classList.remove('hidden');
             btnGenerate.disabled = true;
             closeError();
 
-            // SYSTEM PROMPT ATUALIZADO COM UNIVERSO VERBAL
-            const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico e Regulação Emocional com a personalidade da marca GENIAL CARE.
+            // SYSTEM PROMPT: BASEADO NO GUIA ARSM
+            const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico seguindo estritamente o "Guia de Interpretação ARSM".
             
-            DIRETRIZES DE TOM DE VOZ (UNIVERSO VERBAL):
-            1. PERSONALIDADE: Seja empolgado (ative o melhor das pessoas), explicativo (compartilhe conhecimento de forma simples), habilidoso (valide com prática), acolhedor (crie ambiente confortável) e técnico (único e específico, mas acessível).
-            2. ESTILO DE ESCRITA:
-               - Use contrações permitidas: "pra", "né", "tá".
-               - Use "a gente" ou "nós" para gerar proximidade e pertencimento.
-               - Frases curtas e objetivas. Use listas e tópicos para facilitar.
-               - Evite clichês e gerundismo ("vamos estar fazendo" -> NÃO). Use gerúndio normal ("estamos fazendo").
-               - Termos técnicos gerais (autismo, intervenção, terapias) em minúscula. Produtos proprietários em Maiúscula.
-            3. EMPATIA E ACOLHIMENTO:
-               - Valide sentimentos. Use "Sentimos muito" em vez de "ops" ou "eita".
-               - Chame pelo nome quando possível (no contexto da conduta, use "a criança" ou o nome se fornecido).
-               - Use pronomes possessivos ("nosso", "sua") para destacar pertencimento.
+            DIRETRIZES DE ESTILO:
+            1. SEJA CLARO E OBJETIVO: Use verbos no imperativo e listas.
+            2. TOM TÉCNICO: Prescreva condutas clínicas.
 
-            BASE TEÓRICA MANDATÓRIA (NEUROBIOLOGIA):
-            1. O sistema nervoso busca segurança. Comportamentos de luta/fuga/congelamento ocorrem por percepção de ameaça.
-            2. CO-REGULAÇÃO: A criança precisa de um adulto calmo. Não exija auto-regulação na crise.
-            3. DIREITOS SENSORIAIS: Necessidades sensoriais são direitos, não recompensas.
-            4. PREVISIBILIDADE: Use suportes visuais e modelos para reduzir ansiedade.
-            5. COMUNICAÇÃO: Use a metáfora do "Velocímetro" (Corpo Rápido/Devagar).
+            BASE DE CONHECIMENTO (GUIA ARSM):
+            Utilize as seguintes correlações para gerar condutas específicas se os comportamentos forem identificados na avaliação:
+            
+            1. PRÁXIS (Planejamento Motor):
+               - Se dificuldade em subir/descer equipamentos ou desiste: Dar modelos funcionais, usar reforço diferencial, visuais com passo a passo, dividir tarefa em partes menores.
+            
+            2. SISTEMA ORAL:
+               - Busca Oral (lambe, morde): Oferecer alternativas seguras (mordedores, canudos) e ensinar autorregulação.
+               - Hiper Oral (baba, náusea): Evitar estímulos, usar histórias narrativas para resolução de problemas.
+            
+            3. SISTEMA AUDITIVO:
+               - Hiporresposta (não ouve): Usar estímulos intensos, parear com reforçadores visuais.
+               - Hiperresposta (tapa ouvido, medo): Dar controle do som à criança, parear som baixo com reforço, apoio visual, fones de proteção se necessário.
+            
+            4. SISTEMA PROPRIOCEPTIVO (Força/Corpo):
+               - Busca (empurra, bate): Ofertar "trabalho pesado" funcional (empurrar/puxar), itens de resistência.
+               - Fraqueza (falha em carrinho de mão/escalada): Suporte físico proximal, adaptar carga, reforçar core.
+               - Falta de graduação de força: Atividades de controle (apertar balão sem estourar), feedback visual.
+            
+            5. SISTEMA TÁTIL:
+               - Hiporresposta (não sente toque leve/firme): Usar dicas visuais, aumentar intensidade do toque (tato profundo), ressaltar estímulo.
+               - Hiperresposta (afasta, limpa o local, incomoda com etiqueta): Respeitar limites, evitar toque surpresa, dar previsibilidade, usar toque firme (pressão) ao invés de leve.
+            
+            6. SISTEMA VISUAL:
+               - Hiperresposta (foge da luz, pisca): Ajustar ângulo/intensidade, óculos escuros/boné, pausas visuais, cabana.
+               - Hiporresposta/Busca (olha de lado, passa objeto na frente): Ofertar estímulos visuais funcionais, reforçar atenção compartilhada.
+            
+            7. SISTEMA VESTIBULAR (Movimento):
+               - Busca (gira, pula muito): Ofertar movimento funcional planejado (pausas ativas), assentos dinâmicos.
+               - Insegurança Gravitacional (medo de tirar pé do chão/instabilidade): Dar apoio firme, previsibilidade, nunca forçar, começar no chão firme.
 
             TAREFA:
-            Com base na AVALIAÇÃO e SINAIS fornecidos, gere condutas práticas.
-            Escreva as condutas usando o tom de voz descrito acima (acolhedor, "a gente", "pra", explicativo).
+            Analise a AVALIAÇÃO (busque os padrões acima) e os SINAIS DA CURVA.
+            Gere um protocolo prático mapeando as estratégias do Guia ARSM para cada nível de alerta.
             
             Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
-            const userPrompt = `AVALIAÇÃO/PERFIL SENSORIAL:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS:\nN5 (Crise): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
+            const userPrompt = `AVALIAÇÃO/PERFIL SENSORIAL:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS NA CURVA:\nN5 (Crise): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
 
             try {
                 const data = await callGemini({
@@ -432,7 +451,7 @@
                         </div>
                         <div class="text-xs font-semibold text-slate-700 italic bg-slate-50 p-3 rounded-xl border border-slate-100">${lv.beh || 'Não descrito'}</div>
                     </td>
-                    <td class="px-6 py-6 text-sm text-slate-800 font-medium bg-indigo-50/10 leading-relaxed">
+                    <td class="px-6 py-6 text-sm text-slate-800 font-medium bg-indigo-50/10 leading-relaxed conduta-list">
                         ${lv.cond}
                     </td>
                 </tr>
