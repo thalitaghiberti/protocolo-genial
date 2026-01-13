@@ -118,8 +118,8 @@
                     <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4">3. Sinais Observados</h2>
                     <div class="space-y-4">
                         <div class="group">
-                            <label class="block text-[9px] font-black text-red-600 uppercase mb-1">Nível 5 - Crise (Luta/Fuga)</label>
-                            <input type="text" id="inLv5" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-red-600 outline-none transition-all text-sm" placeholder="Ex: Agredir o outro, congelamento">
+                            <label class="block text-[9px] font-black text-red-600 uppercase mb-1">Nível 5 - Pico</label>
+                            <input type="text" id="inLv5" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-red-600 outline-none transition-all text-sm" placeholder="Ex: Agressividade, desorganização intensa">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-orange-500 uppercase mb-1">Nível 4 - Aceleração</label>
@@ -191,7 +191,7 @@
                                 <text x="215" y="235" id="outLv2" class="behavior-text" fill="#22c55e">N2: Gatilho</text>
                                 <text x="365" y="155" id="outLv3" class="behavior-text" fill="#ca8a04">N3: Agitação</text>
                                 <text x="515" y="85" id="outLv4" class="behavior-text" fill="#ea580c">N4: Aceleração</text>
-                                <text x="665" y="35" id="outLv5" class="behavior-text" fill="#b91c1c">N5: Crise</text>
+                                <text x="665" y="35" id="outLv5" class="behavior-text" fill="#b91c1c">N5: Pico</text>
                             </svg>
                         </div>
                     </div>
@@ -201,7 +201,7 @@
                         <table class="min-w-full divide-y divide-slate-100">
                             <thead class="bg-indigo-950">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-200 uppercase tracking-widest">Nível / Fase</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-200 uppercase tracking-widest">Comportamento</th>
                                     <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-100 uppercase tracking-widest bg-indigo-900">Conduta de Co-Regulação e Manejo</th>
                                 </tr>
                             </thead>
@@ -278,7 +278,7 @@
             document.getElementById('outLv2').textContent = `N2: ${document.getElementById('inLv2').value || 'Gatilho'}`;
             document.getElementById('outLv3').textContent = `N3: ${document.getElementById('inLv3').value || 'Agitação'}`;
             document.getElementById('outLv4').textContent = `N4: ${document.getElementById('inLv4').value || 'Aceleração'}`;
-            document.getElementById('outLv5').textContent = `N5: ${document.getElementById('inLv5').value || 'Crise'}`;
+            document.getElementById('outLv5').textContent = `N5: ${document.getElementById('inLv5').value || 'Pico'}`;
         }
 
         // Lógica de Ficheiros
@@ -417,7 +417,7 @@
             
             Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
-            const userPrompt = `AVALIAÇÃO/PERFIL SENSORIAL:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS NA CURVA:\nN5 (Crise): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
+            const userPrompt = `AVALIAÇÃO/PERFIL SENSORIAL:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS NA CURVA:\nN5 (Pico): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
 
             try {
                 const data = await callGemini({
@@ -440,7 +440,7 @@
 
         function renderProtocol(behaviors, conducts) {
             const levels = [
-                { id: 5, color: 'text-red-600', phase: 'Crise (Luta/Fuga)', beh: behaviors.l5, cond: conducts.n5 },
+                { id: 5, color: 'text-red-600', phase: 'Pico', beh: behaviors.l5, cond: conducts.n5 },
                 { id: 4, color: 'text-orange-500', phase: 'Aceleração', beh: behaviors.l4, cond: conducts.n4 },
                 { id: 3, color: 'text-yellow-600', phase: 'Agitação', beh: behaviors.l3, cond: conducts.n3 },
                 { id: 2, color: 'text-emerald-500', phase: 'Gatilho (Alerta)', beh: behaviors.l2, cond: conducts.n2 },
