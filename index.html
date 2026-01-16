@@ -55,7 +55,6 @@
 
     <div class="max-w-6xl mx-auto py-8 px-4">
         
-        <!-- Navbar / Config -->
         <nav class="flex justify-between items-center mb-8 no-print">
             <div class="flex items-center gap-2">
                 <div class="bg-indigo-600 p-2 rounded-lg text-white">
@@ -70,7 +69,6 @@
             </div>
         </nav>
 
-        <!-- Painel de Configurações (Escondido) -->
         <div id="settingsPanel" class="hidden no-print mb-6 p-6 bg-indigo-900 text-white rounded-xl shadow-inner relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-lock text-6xl"></i></div>
             <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Configuração de Acesso</h3>
@@ -85,7 +83,6 @@
             <p id="keyStatus" class="text-[10px] text-emerald-400 mt-2 font-bold hidden flex items-center gap-1"><i class="fas fa-check-circle"></i> Chave salva!</p>
         </div>
 
-        <!-- Mensagens de Erro -->
         <div id="errorBox" class="hidden no-print mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded shadow-sm flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -96,7 +93,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Painel Lateral de Entrada -->
             <aside class="lg:col-span-4 space-y-6 no-print">
                 
                 <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -152,11 +148,9 @@
                 </section>
             </aside>
 
-            <!-- Visualização do Protocolo -->
             <main class="lg:col-span-8 print-container">
                 <div id="finalReport" class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 min-h-full relative overflow-hidden">
                     
-                    <!-- Decorative Element -->
                     <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-16 -mt-16 no-print"></div>
 
                     <div class="flex justify-between items-start mb-10 relative">
@@ -170,299 +164,26 @@
                         </button>
                     </div>
 
-                    <!-- Gráfico da Curva -->
                     <div class="mb-12 bg-slate-50 p-6 rounded-2xl border border-slate-100 relative">
                         <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-md">Curva de Aceleração</div>
                         <div class="h-64 mt-4">
                             <svg viewBox="0 0 800 300" class="w-full h-full">
-                                <!-- Zonas de Cor -->
                                 <rect x="0" y="0" width="800" height="60" fill="#fee2e2" fill-opacity="0.4" />
                                 <rect x="0" y="60" width="800" height="60" fill="#ffedd5" fill-opacity="0.4" />
                                 <rect x="0" y="120" width="800" height="60" fill="#fef9c3" fill-opacity="0.4" />
                                 <rect x="0" y="180" width="800" height="60" fill="#ecfdf5" fill-opacity="0.4" />
                                 <rect x="0" y="240" width="800" height="60" fill="#f0fdf4" fill-opacity="0.4" />
 
-                                <!-- Linha da Curva -->
                                 <path d="M 50 270 Q 150 270 300 150 T 650 30" fill="none" stroke="#4338ca" stroke-width="5" stroke-linecap="round" />
 
-                                <!-- Pontos dos Níveis -->
                                 <circle cx="50" cy="270" r="8" fill="#15803d" stroke="#fff" stroke-width="2" />
                                 <circle cx="200" cy="230" r="8" fill="#22c55e" stroke="#fff" stroke-width="2" />
                                 <circle cx="350" cy="150" r="8" fill="#eab308" stroke="#fff" stroke-width="2" />
                                 <circle cx="500" cy="80" r="8" fill="#f97316" stroke="#fff" stroke-width="2" />
                                 <circle cx="650" cy="30" r="8" fill="#ef4444" stroke="#fff" stroke-width="2" />
 
-                                <!-- Textos Dinâmicos -->
                                 <text x="65" y="275" id="outLv1" class="behavior-text" fill="#15803d">N1: Calma</text>
                                 <text x="215" y="235" id="outLv2" class="behavior-text" fill="#22c55e">N2: Gatilho</text>
                                 <text x="365" y="155" id="outLv3" class="behavior-text" fill="#ca8a04">N3: Agitação</text>
                                 <text x="515" y="85" id="outLv4" class="behavior-text" fill="#ea580c">N4: Aceleração</text>
-                                <text x="665" y="35" id="outLv5" class="behavior-text" fill="#b91c1c">N5: Pico</text>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- Tabela de Protocolo -->
-                    <div class="overflow-hidden rounded-2xl border border-slate-100 shadow-sm">
-                        <table class="min-w-full divide-y divide-slate-100">
-                            <thead class="bg-indigo-950">
-                                <tr>
-                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-200 uppercase tracking-widest">Comportamento</th>
-                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-100 uppercase tracking-widest bg-indigo-900">Conduta de Co-Regulação e Manejo</th>
-                                </tr>
-                            </thead>
-                            <tbody id="protocolContent" class="bg-white divide-y divide-slate-100">
-                                <tr>
-                                    <td colspan="2" class="px-6 py-20 text-center text-slate-300 italic text-sm">
-                                        <i class="fas fa-brain text-3xl mb-4 block opacity-20"></i>
-                                        Anexe o relatório multidisciplinar para gerar estratégias de co-regulação integradas.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <footer class="mt-12 pt-6 border-t border-slate-50 text-[10px] text-slate-400 text-center font-medium">
-                        Baseado no modelo de Curva de Aceleração com ênfase em Neurobiologia e Integração Sensorial.
-                    </footer>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <script>
-        // Configuração da API
-        const BASE_API_KEY = ""; 
-        const MODEL = "gemini-2.5-flash-preview-09-2025";
-        
-        // Elementos UI
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('fileInput');
-        const evaluationText = document.getElementById('evaluationContent');
-        const fileOk = document.getElementById('fileOk');
-        const btnGenerate = document.getElementById('btnGenerate');
-        const btnTxt = document.getElementById('btnTxt');
-        const btnSpinner = document.getElementById('btnSpinner');
-        const protocolContent = document.getElementById('protocolContent');
-        const errorBox = document.getElementById('errorBox');
-        const errorMsg = document.getElementById('errorMsg');
-        const settingsPanel = document.getElementById('settingsPanel');
-        const customApiKeyInput = document.getElementById('customApiKey');
-        const keyStatus = document.getElementById('keyStatus');
-
-        // Inicialização: Verifica Chave Fixa ou LocalStorage
-        window.addEventListener('load', () => {
-            if (BASE_API_KEY) {
-                console.log("Sistema pronto para uso.");
-            } else {
-                const savedKey = localStorage.getItem('geminiApiKey');
-                if (savedKey) customApiKeyInput.value = savedKey;
-                else toggleSettings();
-            }
-        });
-
-        // Função para Salvar Chave (caso queiram sobrescrever)
-        function saveApiKey() {
-            const key = customApiKeyInput.value.trim();
-            if (key) {
-                localStorage.setItem('geminiApiKey', key);
-                keyStatus.classList.remove('hidden');
-                setTimeout(() => keyStatus.classList.add('hidden'), 3000);
-            }
-        }
-
-        // Toggle Settings
-        function toggleSettings() { settingsPanel.classList.toggle('hidden'); }
-        function closeError() { errorBox.classList.add('hidden'); }
-
-        // Sincronização de Texto
-        function syncName() { document.getElementById('outName').innerText = document.getElementById('studentName').value || "---"; }
-        
-        function updateGraph() {
-            document.getElementById('outLv1').textContent = `N1: ${document.getElementById('inLv1').value || 'Calma'}`;
-            document.getElementById('outLv2').textContent = `N2: ${document.getElementById('inLv2').value || 'Gatilho'}`;
-            document.getElementById('outLv3').textContent = `N3: ${document.getElementById('inLv3').value || 'Agitação'}`;
-            document.getElementById('outLv4').textContent = `N4: ${document.getElementById('inLv4').value || 'Aceleração'}`;
-            document.getElementById('outLv5').textContent = `N5: ${document.getElementById('inLv5').value || 'Pico'}`;
-        }
-
-        // Lógica de Ficheiros
-        dropZone.onclick = () => fileInput.click();
-        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); };
-        dropZone.ondragleave = () => dropZone.classList.remove('drag-over');
-        dropZone.ondrop = (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); };
-        fileInput.onchange = (e) => handleFiles(e.target.files);
-
-        function handleFiles(files) {
-            Array.from(files).forEach(file => {
-                if (file.name.endsWith('.docx')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        mammoth.extractRawText({ arrayBuffer: e.target.result })
-                            .then(res => { 
-                                evaluationText.value += `\n--- [RELATÓRIO: ${file.name}] ---\n${res.value}\n`; 
-                                fileOk.innerHTML = `<i class="fas fa-check-circle"></i> Documento(s) Adicionado(s)`;
-                                fileOk.classList.remove('hidden'); 
-                            });
-                    };
-                    reader.readAsArrayBuffer(file);
-                } else {
-                    const reader = new FileReader();
-                    reader.onload = (e) => { 
-                        evaluationText.value += `\n--- [RELATÓRIO: ${file.name}] ---\n${e.target.result}\n`; 
-                        fileOk.innerHTML = `<i class="fas fa-check-circle"></i> Documento(s) Adicionado(s)`;
-                        fileOk.classList.remove('hidden'); 
-                    };
-                    reader.readAsText(file);
-                }
-            });
-        }
-
-        // Chamada API com Retry
-        async function callGemini(payload, retries = 5) {
-            // Prioridade: Chave do Usuário (localStorage) > Chave Fixa (BASE_API_KEY)
-            const userKey = customApiKeyInput.value || localStorage.getItem('geminiApiKey');
-            const currentKey = userKey || BASE_API_KEY;
-            
-            if (!currentKey) {
-                settingsPanel.classList.remove('hidden');
-                throw new Error("⚠️ Erro de configuração. Chave de API não encontrada.");
-            }
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${currentKey}`;
-            
-            let delay = 1000;
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (response.ok) return await response.json();
-                    
-                    const errData = await response.json().catch(() => ({}));
-                    if (response.status === 400 || response.status === 403) {
-                        throw new Error("Chave de API inválida ou expirada.");
-                    }
-                    
-                    if (response.status !== 429 && response.status < 500) break;
-                } catch (e) { 
-                    if (e.message.includes("inválida")) throw e; 
-                    if (i === retries - 1) throw e; 
-                }
-                await new Promise(r => setTimeout(r, delay));
-                delay *= 2;
-            }
-            throw new Error("A IA excedeu o limite ou está ocupada. Tenta novamente em segundos.");
-        }
-
-        // Gerar Protocolo
-        btnGenerate.onclick = async () => {
-            const student = document.getElementById('studentName').value || "Aluno";
-            const evaluation = evaluationText.value;
-            const behaviors = {
-                l5: document.getElementById('inLv5').value,
-                l4: document.getElementById('inLv4').value,
-                l3: document.getElementById('inLv3').value,
-                l2: document.getElementById('inLv2').value,
-                l1: document.getElementById('inLv1').value
-            };
-
-            if (!behaviors.l5 || !behaviors.l1) {
-                errorMsg.innerText = "Define pelo menos os comportamentos de Nível 1 e 5.";
-                errorBox.classList.remove('hidden');
-                return;
-            }
-
-            btnTxt.innerText = "Processando Análise Integrada...";
-            btnSpinner.classList.remove('hidden');
-            btnGenerate.disabled = true;
-            closeError();
-
-            // SYSTEM PROMPT: BASEADO NO BRANDBOOK GENIAL CARE & GUIA DE ESTILO
-            const systemPrompt = `Atue como um Especialista da Genial Care.
-
-            PERSONALIDADE E TOM DE VOZ (BRANDBOOK):
-            1. ACOLHEDOR & PRÓXIMO: Use "a gente", "pra", chame a criança pelo nome. Seja empático.
-            2. EXPLICATIVO & SIMPLES: "Traduzir" a ciência. Sem termos técnicos difíceis.
-            3. HABILIDOSO: Dê dicas práticas que funcionam na vida real.
-            4. EMPOLGADO: Texto com energia (sem exageros), motivador.
-            5. FLUIDEZ TOTAL (CRUCIAL): Escreva um único parágrafo fluido por nível. 
-               - NÃO USE TÍTULOS como "1. Regulação:" ou "Estratégia:".
-               - Comece direto com o verbo: "Ofereça...", "Organize...", "Garanta...".
-               - Conecte as frases: "Além disso...", "Para ajudar...", "Também é importante...".
-
-            VOCABULÁRIO ESPECÍFICO (EVITE vs PREFIRA):
-            - EVITE: "Paciente" (use Criança/Nome), "Indivíduo", "Birra" (use Crise/Desafio), "Tratamento" (use Intervenção), "Sintomas" (use Sinais), "Portador", "Doença".
-            - PREFIRA: "Sinais", "Intervenção", "Crise", "A gente".
-
-            SIMPLIFICAÇÃO TÉCNICA (TRADUÇÃO):
-            - "Input proprioceptivo" -> "Atividades de força (empurrar/puxar) para sentir o corpo".
-            - "Regulação vestibular" -> "Atividades de movimento ou pausa para acalmar".
-            - "Rigidez de práxis" -> "Dificuldade em mudar o jeito de fazer as coisas".
-            - "Déficit comunicativo" -> "Dificuldade em se expressar ou entender".
-
-            INTEGRAÇÃO DOS DADOS (Multidisciplinar):
-            Cruze os dados do RELATÓRIO com a CURVA para gerar condutas.
-            - Fono: Se usa CAA, sugira "mostrar figuras" na crise.
-            - TO: Se busca sensação, sugira "atividades seguras" (mordedor, pular).
-            - ABA: Foco no antecedente (previsibilidade).
-
-            SEGURANÇA:
-            - NUNCA use "contenção". Use "garantir segurança", "proteger".
-
-            TAREFA:
-            Gere o protocolo para cada nível (5 a 1) usando essa linguagem Genial Care (fluida, simples, "a gente"). O texto deve ser corrido, conectando as estratégias de forma natural.
-            
-            Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
-
-            const userPrompt = `RELATÓRIO MULTIDISCIPLINAR:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS NA CURVA:\nN5 (Pico): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
-
-            try {
-                const data = await callGemini({
-                    contents: [{ parts: [{ text: userPrompt }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: { responseMimeType: "application/json" }
-                });
-
-                const conducts = JSON.parse(data.candidates[0].content.parts[0].text);
-                renderProtocol(behaviors, conducts);
-            } catch (err) {
-                errorMsg.innerText = err.message;
-                errorBox.classList.remove('hidden');
-            } finally {
-                btnTxt.innerText = "Gerar Protocolo Integrado";
-                btnSpinner.classList.add('hidden');
-                btnGenerate.disabled = false;
-            }
-        };
-
-        function renderProtocol(behaviors, conducts) {
-            const levels = [
-                { id: 5, color: 'text-red-600', phase: 'Pico', beh: behaviors.l5, cond: conducts.n5 },
-                { id: 4, color: 'text-orange-500', phase: 'Aceleração', beh: behaviors.l4, cond: conducts.n4 },
-                { id: 3, color: 'text-yellow-600', phase: 'Agitação', beh: behaviors.l3, cond: conducts.n3 },
-                { id: 2, color: 'text-emerald-500', phase: 'Gatilho (Alerta)', beh: behaviors.l2, cond: conducts.n2 },
-                { id: 1, color: 'text-emerald-700', phase: 'Calma (Regulado)', beh: behaviors.l1, cond: conducts.n1 }
-            ];
-
-            protocolContent.innerHTML = levels.map(lv => `
-                <tr class="hover:bg-slate-50 transition-all">
-                    <td class="px-6 py-6 w-1/3 border-r border-slate-50">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black bg-slate-100 ${lv.color}">${lv.id}</span>
-                            <span class="text-[9px] font-black uppercase tracking-tighter text-slate-400">${lv.phase}</span>
-                        </div>
-                        <div class="text-xs font-semibold text-slate-700 italic bg-slate-50 p-3 rounded-xl border border-slate-100">${lv.beh || 'Não descrito'}</div>
-                    </td>
-                    <td class="px-6 py-6 text-sm text-slate-800 font-medium bg-indigo-50/10 leading-relaxed conduta-text">
-                        ${lv.cond}
-                    </td>
-                </tr>
-            `).join('');
-        }
-    </script>
-</body>
-</html>
+                                <text x="665" y="35" id
