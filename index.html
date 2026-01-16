@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,9 +40,10 @@
         .behavior-text { font-size: 10px; font-weight: 700; }
         
         /* Estilo para listas dentro da tabela */
-        .conduta-list ul { list-style-type: disc; padding-left: 1.2em; margin-bottom: 0.5em; }
-        .conduta-list li { margin-bottom: 0.3em; }
-        .conduta-list strong { color: #3730a3; font-weight: 700; }
+        .conduta-list ul { list-style-type: none; padding-left: 0; margin-bottom: 0.5em; }
+        .conduta-list li { margin-bottom: 0.5em; position: relative; padding-left: 1.2em; }
+        .conduta-list li::before { content: "•"; color: #4f46e5; font-weight: bold; position: absolute; left: 0; }
+        .conduta-list strong { color: #312e81; font-weight: 700; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
@@ -53,7 +54,7 @@
         <nav class="flex justify-between items-center mb-8 no-print">
             <div class="flex items-center gap-2">
                 <div class="bg-indigo-600 p-2 rounded-lg text-white">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-file-medical-alt"></i>
                 </div>
                 <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Análise de Relatório Multidisciplinar</span></h1>
             </div>
@@ -68,7 +69,7 @@
         <div id="settingsPanel" class="hidden no-print mb-6 p-6 bg-indigo-900 text-white rounded-xl shadow-inner relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-lock text-6xl"></i></div>
             <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Configuração de Acesso</h3>
-            <p class="text-xs opacity-80 mb-4 max-w-lg">A chave de API já está configurada no sistema. Caso queira substituir pela sua própria chave pessoal, use o campo abaixo.</p>
+            <p class="text-xs opacity-80 mb-4 max-w-lg">A chave de API do sistema já está configurada. Se precisar substituir, use o campo abaixo.</p>
             
             <div class="flex gap-2 max-w-2xl">
                 <input type="password" id="customApiKey" placeholder="Sua chave API (opcional)..." class="flex-1 p-3 bg-indigo-950/50 border border-indigo-700 rounded-lg text-sm text-white placeholder-indigo-400 outline-none focus:border-indigo-400 transition-all">
@@ -100,12 +101,12 @@
 
                 <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-2">2. Relatório Multidisciplinar</h2>
-                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Anexar avaliação completa (Vineland, SPM, ARSM)</p>
+                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Anexar avaliação completa (Vineland, SPM, ARSM, etc.)</p>
                     
                     <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-400 transition-all mb-4 bg-slate-50/50">
-                        <i class="fas fa-file-medical-alt text-indigo-300 text-3xl mb-2"></i>
+                        <i class="fas fa-folder-open text-indigo-300 text-3xl mb-2"></i>
                         <p class="text-[10px] text-slate-500 font-bold uppercase">Arraste o Relatório Aqui<br>(DOCX ou TXT)</p>
-                        <input type="file" id="fileInput" class="hidden" accept=".docx,.txt">
+                        <input type="file" id="fileInput" class="hidden" accept=".docx,.txt" multiple>
                     </div>
 
                     <textarea id="evaluationContent" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" rows="5" placeholder="Ou cole o conteúdo do relatório aqui. A IA buscará automaticamente dados de Vineland, Perfil Sensorial e ARSM."></textarea>
@@ -227,7 +228,7 @@
     <script>
         // Configuração da API
         // --- CHAVE FIXA INSERIDA ---
-        const BASE_API_KEY = "AIzaSyD2R_z9II3KjTkmDpqRPoNzB403XeOxKWE"; 
+        const BASE_API_KEY = "AIzaSyAQw3wSTaPWYBV5_PQjtMIOmben-Ui1jN4"; 
         const MODEL = "gemini-2.5-flash-preview-09-2025";
         
         // Elementos UI
@@ -245,7 +246,7 @@
         const customApiKeyInput = document.getElementById('customApiKey');
         const keyStatus = document.getElementById('keyStatus');
 
-        // Inicialização: Se tem chave fixa, nem verifica o localStorage
+        // Inicialização: Verifica Chave Fixa ou LocalStorage
         window.addEventListener('load', () => {
             if (BASE_API_KEY) {
                 console.log("Sistema pronto para uso.");
@@ -289,20 +290,28 @@
         fileInput.onchange = (e) => handleFiles(e.target.files);
 
         function handleFiles(files) {
-            const file = files[0];
-            if (!file) return;
-            if (file.name.endsWith('.docx')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    mammoth.extractRawText({ arrayBuffer: e.target.result })
-                        .then(res => { evaluationText.value = res.value; fileOk.classList.remove('hidden'); });
-                };
-                reader.readAsArrayBuffer(file);
-            } else {
-                const reader = new FileReader();
-                reader.onload = (e) => { evaluationText.value = e.target.result; fileOk.classList.remove('hidden'); };
-                reader.readAsText(file);
-            }
+            Array.from(files).forEach(file => {
+                if (file.name.endsWith('.docx')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        mammoth.extractRawText({ arrayBuffer: e.target.result })
+                            .then(res => { 
+                                evaluationText.value += `\n--- [RELATÓRIO: ${file.name}] ---\n${res.value}\n`; 
+                                fileOk.innerHTML = `<i class="fas fa-check-circle"></i> Documento(s) Adicionado(s)`;
+                                fileOk.classList.remove('hidden'); 
+                            });
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = (e) => { 
+                        evaluationText.value += `\n--- [RELATÓRIO: ${file.name}] ---\n${e.target.result}\n`; 
+                        fileOk.innerHTML = `<i class="fas fa-check-circle"></i> Documento(s) Adicionado(s)`;
+                        fileOk.classList.remove('hidden'); 
+                    };
+                    reader.readAsText(file);
+                }
+            });
         }
 
         // Chamada API com Retry
@@ -368,25 +377,26 @@
             btnGenerate.disabled = true;
             closeError();
 
-            // SYSTEM PROMPT: BASEADO NO GUIA ARSM E INTEGRAÇÃO DE AVALIAÇÕES
+            // SYSTEM PROMPT: BASEADO NO GUIA ARSM E INTEGRAÇÃO DE AVALIAÇÕES (Foco em Manejo)
             const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico.
             
             DIRETRIZES DE ESTILO:
-            1. SEJA CLARO E OBJETIVO: Use verbos no imperativo e listas.
-            2. TOM TÉCNICO: Prescreva condutas clínicas.
+            1. SEJA CLARO E OBJETIVO: Use verbos no imperativo e listas. Use linguagem acessível a pais e não-especialistas (ex: em vez de "desregulação proprioceptiva", use "precisa sentir o corpo").
+            2. TOM TÉCNICO MAS ACESSÍVEL: Prescreva condutas práticas de manejo.
             
             RESTRIÇÕES CRÍTICAS (SEGURANÇA E ÉTICA):
             - PROIBIDO usar a palavra "contenção".
             - PROIBIDO sugerir intervenções de contenção física ou restrição de movimento forçada.
             - Em situações de crise (Nível 5), priorize: segurança do ambiente, retirada de estímulos, proteção física (barreiras moles, afastamento de objetos) e co-regulação.
+            - FOCO EXCLUSIVO EM MANEJO: Não sugira "ensinar" habilidades novas (ex: "ensinar a amarrar sapato" ou "treinar fala"). Foque apenas no que o adulto deve fazer no MOMENTO do comportamento para regular a criança.
 
             BASE DE CONHECIMENTO INTEGRADA:
             Você deve cruzar os dados do RELATÓRIO MULTIDISCIPLINAR (que pode conter Vineland, SPM, ARSM, Perfil Sensorial) com o Guia ARSM para gerar condutas personalizadas.
             
             1. INTEGRAÇÃO DE DADOS (Buscar no texto do relatório):
-               - Se VINELAND indicar baixa comunicação expressiva + ARSM mostrar desregulação: Priorizar suporte visual e comunicação alternativa nos níveis 2 e 3.
-               - Se SPM/PERFIL SENSORIAL indicar hipersensibilidade (Auditiva/Tátil/Visual) + ARSM mostrar fuga/esquiva: A conduta deve focar na redução do estímulo aversivo específico identificado no SPM.
-               - Se ARSM mostrar busca vestibular/proprioceptiva + SPM confirmar busca sensorial: Intensificar "trabalho pesado" e pausas ativas funcionais.
+               - COMUNICAÇÃO (Vineland/Fono): Se a criança não fala, o manejo deve ser visual/gestual. Não peça para ela "falar o que sente" na crise.
+               - SENSORIAL (SPM/ARSM): Se houver hipersensibilidade auditiva, o manejo deve ser silencioso. Se houver busca proprioceptiva, oferecer pressão.
+               - EMOCIONAL (Psico): Se houver rigidez, o manejo deve focar em previsibilidade e não em flexibilização no momento da crise.
 
             2. GUIA ARSM (Referência de Condutas se identificado na avaliação):
                - PRÁXIS: Dificuldade motora -> Modelos, reforço diferencial, passo a passo visual.
