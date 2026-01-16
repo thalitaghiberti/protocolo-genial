@@ -69,7 +69,7 @@
         <div id="settingsPanel" class="hidden no-print mb-6 p-6 bg-indigo-900 text-white rounded-xl shadow-inner relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-lock text-6xl"></i></div>
             <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Configuração de Acesso</h3>
-            <p class="text-xs opacity-80 mb-4 max-w-lg">A chave de API já está configurada no sistema. Se precisar substituir, use o campo abaixo.</p>
+            <p class="text-xs opacity-80 mb-4 max-w-lg">A chave de API já está integrada no sistema. Se precisar usar uma chave pessoal, insira abaixo.</p>
             
             <div class="flex gap-2 max-w-2xl">
                 <input type="password" id="customApiKey" placeholder="Sua chave API (opcional)..." class="flex-1 p-3 bg-indigo-950/50 border border-indigo-700 rounded-lg text-sm text-white placeholder-indigo-400 outline-none focus:border-indigo-400 transition-all">
@@ -157,7 +157,7 @@
                     <div class="flex justify-between items-start mb-10 relative">
                         <div>
                             <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Protocolo de Regulação e Manejo</span>
-                            <h2 class="text-3xl font-extrabold text-slate-900 leading-none mt-1">Plano Individualizado Integrado</h2>
+                            <h2 class="text-3xl font-extrabold text-slate-900 leading-none mt-1">Protocolo de Conduta</h2>
                             <p class="text-sm text-slate-400 mt-2 font-medium">Paciente: <span id="outName" class="text-slate-800 underline decoration-indigo-300 decoration-2 underline-offset-4 font-bold uppercase tracking-tight">---</span></p>
                         </div>
                         <button onclick="window.print()" class="no-print bg-slate-50 text-slate-400 hover:text-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center transition-all">
@@ -246,7 +246,7 @@
         const customApiKeyInput = document.getElementById('customApiKey');
         const keyStatus = document.getElementById('keyStatus');
 
-        // Inicialização: Se tem chave fixa, nem verifica o localStorage
+        // Inicialização: Verifica Chave Fixa ou LocalStorage
         window.addEventListener('load', () => {
             if (BASE_API_KEY) {
                 console.log("Sistema pronto para uso.");
@@ -382,6 +382,11 @@
             
             MISSÃO:
             Criar um plano de manejo para momentos de crise e regulação, traduzindo termos técnicos para uma linguagem simples e acessível que qualquer pai ou professor consiga executar.
+
+            DIRETRIZES DE ESTILO:
+            1. FLUIDEZ: NÃO repita o nome do nível ou o comportamento na coluna de conduta.
+            2. SEM TÍTULOS EM NEGRITO: Evite "Reforço Positivo: Faça x". Comece direto com "Faça x" ou "Elogie...".
+            3. PARÁGRAFOS CURTOS: Use quebras de linha para facilitar a leitura.
 
             DIRETRIZES DE TRADUÇÃO (LINGUAGEM ACESSÍVEL):
             - Em vez de "Input proprioceptivo", use: "Atividades de força ou pressão (como empurrar parede, carregar peso)".
