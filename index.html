@@ -61,12 +61,13 @@
             color: #6D68AD;
         }
 
-        .behavior-text { font-size: 10px; font-weight: 700; font-family: 'Inter', sans-serif; }
+        .behavior-text { font-size: 11px; font-weight: 800; font-family: 'Inter', sans-serif; }
         
         .conduta-text { 
             line-height: 1.6;
             color: #4A4A4A;
             text-align: justify;
+            font-size: 0.95rem;
         }
         .conduta-text strong {
             color: #6D68AD;
@@ -129,7 +130,7 @@
                     <h2 class="text-xs font-bold text-genial-purple uppercase tracking-widest mb-4 flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-genial-yellow"></span> 1. Identificação
                     </h2>
-                    <input type="text" id="studentName" oninput="syncName()" placeholder="Nome da Criança" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-genial-purple/50 focus:border-genial-purple outline-none transition-all font-medium text-gray-700 placeholder-gray-400">
+                    <input type="text" id="studentName" placeholder="Nome da Criança" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-genial-purple/50 focus:border-genial-purple outline-none transition-all font-medium text-gray-700 placeholder-gray-400">
                 </section>
 
                 <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -205,7 +206,7 @@
                         </button>
                     </div>
 
-                    <!-- Gráfico da Curva -->
+                    <!-- Gráfico da Curva (Ajustado) -->
                     <div class="mb-10 bg-[#FCFCFD] p-6 rounded-2xl border border-gray-100 relative">
                         <div class="absolute top-4 left-4 flex gap-2">
                              <div class="w-3 h-3 rounded-full bg-genial-purple"></div>
@@ -213,7 +214,8 @@
                              <div class="w-3 h-3 rounded-full bg-genial-blue"></div>
                         </div>
                         <div class="h-64 mt-4">
-                            <svg viewBox="0 0 800 300" class="w-full h-full font-sans">
+                            <!-- ViewBox ajustado para mais espaço vertical -->
+                            <svg viewBox="0 -10 800 320" class="w-full h-full font-sans">
                                 <!-- Zonas de Cor -->
                                 <rect x="0" y="0" width="800" height="60" fill="#fee2e2" fill-opacity="0.4" rx="4" />
                                 <rect x="0" y="60" width="800" height="60" fill="#ffedd5" fill-opacity="0.4" rx="4" />
@@ -231,12 +233,12 @@
                                 <circle cx="500" cy="80" r="8" fill="#fb923c" stroke="#fff" stroke-width="3" />
                                 <circle cx="650" cy="30" r="8" fill="#ef4444" stroke="#fff" stroke-width="3" />
 
-                                <!-- Textos Dinâmicos -->
+                                <!-- Textos Dinâmicos (Ajuste de Y para não cortar) -->
                                 <text x="65" y="275" id="outLv1" class="behavior-text" fill="#6D68AD">N1: Calma</text>
                                 <text x="215" y="235" id="outLv2" class="behavior-text" fill="#6D68AD">N2: Gatilho</text>
                                 <text x="365" y="155" id="outLv3" class="behavior-text" fill="#b45309">N3: Agitação</text>
                                 <text x="515" y="85" id="outLv4" class="behavior-text" fill="#c2410c">N4: Aceleração</text>
-                                <text x="665" y="35" id="outLv5" class="behavior-text" fill="#be123c">N5: Pico</text>
+                                <text x="665" y="45" id="outLv5" class="behavior-text" fill="#be123c">N5: Pico</text> <!-- Movido para baixo (y=45) -->
                             </svg>
                         </div>
                     </div>
@@ -271,7 +273,7 @@
 
     <script>
         // Configuração da API
-        const BASE_API_KEY = "AIzaSyDrKOOQAcsNLVZMfdV3v1jhovhAKnEA1Mc"; 
+        const BASE_API_KEY = "AIzaSyD67jBlJLlTdbEJatI9xCtcadG_Zk6IYcg"; 
         const MODEL = "gemini-2.5-flash-preview-09-2025";
         
         // Elementos UI
@@ -415,7 +417,7 @@
                 return;
             }
 
-            btnTxt.innerText = "Preparando Protocolo Genial...";
+            btnTxt.innerText = "Gerando Protocolo...";
             btnSpinner.classList.remove('hidden');
             btnGenerate.disabled = true;
             closeError();
@@ -423,32 +425,25 @@
             const systemPrompt = `Atue como um Especialista Clínico da Genial Care.
             
             MISSÃO:
-            Criar um protocolo de conduta acolhedor, prático e integrado para famílias e escolas.
+            Criar um protocolo de conduta técnica e acolhedora.
 
-            PERSONALIDADE E TOM DE VOZ (BRANDBOOK GENIAL CARE):
-            1. ACOLHEDOR & PRÓXIMO: Use "a gente", "pra", "né", "tá". Chame a criança pelo nome. Seja empático ("Sabemos que é difícil...", "A gente entende...").
-            2. EXPLICATIVO & SIMPLES: Traduza TUDO. Nada de "propriocepção" solta. Diga "atividades de força para sentir o corpo". Nada de "Déficit vestibular", use "Precisa de movimento".
-            3. HABILIDOSO (PRÁTICO): Vá direto ao ponto. "Faça isso", "Ofereça aquilo".
-            4. EMPOLGADO: Texto com energia positiva.
-            5. FLUIDEZ TOTAL (CRUCIAL): Escreva um único parágrafo fluido por nível. 
-               - NÃO USE TÍTULOS como "1. Regulação:" ou "Estratégia:".
-               - Comece direto com o verbo: "Ofereça...", "Organize...", "Garanta...".
-               - Conecte as frases: "Além disso...", "Para ajudar...", "Também é importante...", "Isso ajuda a...".
+            TOM DE VOZ & ESTILO:
+            1. OBJETIVO E DIRETO: Use verbos no imperativo ("Faça", "Ofereça"). Diga o que deve ser feito, sem rodeios.
+            2. PRIMEIRA PESSOA DO PLURAL (NÓS): Use "Nós indicamos", "Recomendamos", para mostrar suporte clínico, mas mantenha o foco na ação.
+            3. MENOS INFORMAL: Evite excesso de "pra", "né", "tá". Use uma linguagem profissional e acessível (Brandbook "Técnico + Acolhedor").
+            4. FLUIDEZ: Texto corrido em um parágrafo por nível. Sem títulos em negrito ("Estratégia:"). Conecte as ações.
 
-            VOCABULÁRIO ESPECÍFICO (EVITE vs PREFIRA):
-            - EVITE: "Paciente" (use Criança/Nome), "Indivíduo", "Birra" (use Desafio/Momento Difícil), "Tratamento" (use Intervenção), "Sintomas" (use Sinais), "Portador", "Doença".
-            - PREFIRA: "Sinais", "Intervenção", "Desafio", "A gente", "Criança", "Família".
-
-            INTEGRAÇÃO MULTIDISCIPLINAR (O Segredo):
-            - FONOAUDIOLOGIA / CAA: Se o relatório diz que usa CAA (como o Valentim), a conduta de crise TEM QUE SER visual: "Mostre a figura de PAUSA", "Use gestos", "Fale pouco". Não exija fala na crise.
-            - TERAPIA OCUPACIONAL (Sensorial): Se busca sensação (morde, bate), sugira "atividades seguras de força" (mordedor, pular). Se evita (tapa ouvido), proteja (diminuir luz/som).
-            - PSICOLOGIA/ABA: Foco no antecedente (previsibilidade visual) e função (por que está acontecendo?).
+            INTEGRAÇÃO (CRUCIAL):
+            - Leia o relatório (Vineland, SPM, ARSM, Fono).
+            - Se a criança não fala (Fono), a conduta DEVE incluir suporte visual.
+            - Se a criança busca sensação (TO), a conduta DEVE incluir atividade sensorial segura.
+            - Traduza termos técnicos: "Input proprioceptivo" -> "Atividade de força".
 
             SEGURANÇA:
-            - ZERO contenção. Use "proteger", "garantir segurança", "afastar perigos", "dar espaço".
+            - ZERO contenção. Use "proteger", "garantir segurança".
 
             TAREFA:
-            Analise o relatório e os sinais. Escreva um parágrafo fluido, carinhoso e técnico (mas simples) para cada nível, explicando o que fazer.
+            Para cada nível, escreva um parágrafo claro e direto com as condutas integradas.
             
             Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
@@ -467,7 +462,7 @@
                 errorMsg.innerText = err.message;
                 errorBox.classList.remove('hidden');
             } finally {
-                btnTxt.innerText = "Gerar Protocolo Integrado";
+                btnTxt.innerText = "Gerar Protocolo";
                 btnSpinner.classList.add('hidden');
                 btnGenerate.disabled = false;
             }
