@@ -228,7 +228,7 @@
     <script>
         // Configuração da API
         // --- CHAVE FIXA INSERIDA ---
-        const BASE_API_KEY = "AIzaSyAQw3wSTaPWYBV5_PQjtMIOmben-Ui1jN4"; 
+        const BASE_API_KEY = "AIzaSyD2R_z9II3KjTkmDpqRPoNzB403XeOxKWE"; 
         const MODEL = "gemini-2.5-flash-preview-09-2025";
         
         // Elementos UI
@@ -246,7 +246,7 @@
         const customApiKeyInput = document.getElementById('customApiKey');
         const keyStatus = document.getElementById('keyStatus');
 
-        // Inicialização: Verifica Chave Fixa ou LocalStorage
+        // Inicialização: Se tem chave fixa, nem verifica o localStorage
         window.addEventListener('load', () => {
             if (BASE_API_KEY) {
                 console.log("Sistema pronto para uso.");
