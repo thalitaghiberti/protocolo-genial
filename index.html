@@ -39,7 +39,6 @@
 
         .behavior-text { font-size: 10px; font-weight: 700; }
         
-        /* Estilo para texto fluido e legível na tabela */
         .conduta-text { 
             line-height: 1.6;
             color: #334155;
@@ -72,15 +71,15 @@
         <div id="settingsPanel" class="hidden no-print mb-6 p-6 bg-indigo-900 text-white rounded-xl shadow-inner relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-lock text-6xl"></i></div>
             <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Configuração de Acesso</h3>
-            <p class="text-xs opacity-80 mb-4 max-w-lg">A chave de API já está integrada no sistema. Se precisar usar uma chave pessoal, insira abaixo.</p>
+            <p class="text-xs opacity-80 mb-4 max-w-lg">Insira uma chave API válida do Google Gemini abaixo.</p>
             
             <div class="flex gap-2 max-w-2xl">
-                <input type="password" id="customApiKey" placeholder="Sua chave API (opcional)..." class="flex-1 p-3 bg-indigo-950/50 border border-indigo-700 rounded-lg text-sm text-white placeholder-indigo-400 outline-none focus:border-indigo-400 transition-all">
-                <button onclick="saveApiKey()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg text-xs font-bold transition-all shadow-lg flex items-center gap-2">
+                <input type="password" id="customApiKey" placeholder="Cole sua chave AIzaSy... aqui" class="flex-1 p-3 bg-indigo-950/50 border border-indigo-700 rounded-lg text-sm text-white placeholder-indigo-400 outline-none focus:border-indigo-400 transition-all">
+                <button id="btnSaveKey" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg text-xs font-bold transition-all shadow-lg flex items-center gap-2">
                     SALVAR <i class="fas fa-save"></i>
                 </button>
             </div>
-            <p id="keyStatus" class="text-[10px] text-emerald-400 mt-2 font-bold hidden flex items-center gap-1"><i class="fas fa-check-circle"></i> Chave salva!</p>
+            <p id="keyStatus" class="text-[10px] text-emerald-400 mt-2 font-bold hidden flex items-center gap-1"><i class="fas fa-check-circle"></i> Chave salva com sucesso!</p>
         </div>
 
         <div id="errorBox" class="hidden no-print mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded shadow-sm flex items-center justify-between">
@@ -88,7 +87,7 @@
                 <i class="fas fa-exclamation-triangle"></i>
                 <span id="errorMsg" class="text-sm font-medium"></span>
             </div>
-            <button onclick="closeError()"><i class="fas fa-times"></i></button>
+            <button onclick="document.getElementById('errorBox').classList.add('hidden')"><i class="fas fa-times"></i></button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -97,7 +96,7 @@
                 
                 <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4">1. Identificação</h2>
-                    <input type="text" id="studentName" oninput="syncName()" placeholder="Nome da Criança" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium">
+                    <input type="text" id="studentName" placeholder="Nome da Criança" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium">
                 </section>
 
                 <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -106,7 +105,7 @@
                     
                     <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-400 transition-all mb-4 bg-slate-50/50">
                         <i class="fas fa-folder-open text-indigo-300 text-3xl mb-2"></i>
-                        <p class="text-[10px] text-slate-500 font-bold uppercase">Arraste o Relatório Aqui<br>(DOCX ou TXT)</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">Clique ou Arraste o Relatório<br>(DOCX ou TXT)</p>
                         <input type="file" id="fileInput" class="hidden" accept=".docx,.txt" multiple>
                     </div>
 
@@ -121,23 +120,23 @@
                     <div class="space-y-4">
                         <div class="group">
                             <label class="block text-[9px] font-black text-red-600 uppercase mb-1">Nível 5 - Pico</label>
-                            <input type="text" id="inLv5" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-red-600 outline-none transition-all text-sm" placeholder="Ex: Agressividade, desorganização intensa">
+                            <input type="text" id="inLv5" class="w-full p-2 border-b-2 border-slate-100 focus:border-red-600 outline-none transition-all text-sm input-level" placeholder="Ex: Agressividade, desorganização intensa">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-orange-500 uppercase mb-1">Nível 4 - Aceleração</label>
-                            <input type="text" id="inLv4" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-orange-500 outline-none transition-all text-sm" placeholder="Ex: Gritos, fuga de demanda">
+                            <input type="text" id="inLv4" class="w-full p-2 border-b-2 border-slate-100 focus:border-orange-500 outline-none transition-all text-sm input-level" placeholder="Ex: Gritos, fuga de demanda">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-yellow-600 uppercase mb-1">Nível 3 - Agitação</label>
-                            <input type="text" id="inLv3" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-yellow-600 outline-none transition-all text-sm" placeholder="Ex: Recusa, aumento motor">
+                            <input type="text" id="inLv3" class="w-full p-2 border-b-2 border-slate-100 focus:border-yellow-600 outline-none transition-all text-sm input-level" placeholder="Ex: Recusa, aumento motor">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-emerald-500 uppercase mb-1">Nível 2 - Gatilho (Alerta)</label>
-                            <input type="text" id="inLv2" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-500 outline-none transition-all text-sm" placeholder="Ex: Estereotipias aumentadas">
+                            <input type="text" id="inLv2" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-500 outline-none transition-all text-sm input-level" placeholder="Ex: Estereotipias aumentadas">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-emerald-700 uppercase mb-1">Nível 1 - Calma (Regulado)</label>
-                            <input type="text" id="inLv1" oninput="updateGraph()" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-700 outline-none transition-all text-sm" placeholder="Ex: Engajado, interativo">
+                            <input type="text" id="inLv1" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-700 outline-none transition-all text-sm input-level" placeholder="Ex: Engajado, interativo">
                         </div>
                     </div>
 
@@ -186,4 +185,280 @@
                                 <text x="215" y="235" id="outLv2" class="behavior-text" fill="#22c55e">N2: Gatilho</text>
                                 <text x="365" y="155" id="outLv3" class="behavior-text" fill="#ca8a04">N3: Agitação</text>
                                 <text x="515" y="85" id="outLv4" class="behavior-text" fill="#ea580c">N4: Aceleração</text>
-                                <text x="665" y="35" id
+                                <text x="665" y="35" id="outLv5" class="behavior-text" fill="#b91c1c">N5: Pico</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="overflow-hidden rounded-2xl border border-slate-100 shadow-sm">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead class="bg-indigo-950">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-200 uppercase tracking-widest">Comportamento</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-100 uppercase tracking-widest bg-indigo-900">Conduta de Co-Regulação e Manejo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="protocolContent" class="bg-white divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="2" class="px-6 py-20 text-center text-slate-300 italic text-sm">
+                                        <i class="fas fa-brain text-3xl mb-4 block opacity-20"></i>
+                                        Anexe o relatório e preencha os níveis para gerar.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="mt-12 pt-6 border-t border-slate-50 text-[10px] text-slate-400 text-center font-medium">
+                        Baseado no modelo de Curva de Aceleração com ênfase em Neurobiologia e Integração Sensorial.
+                    </footer>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO
+        // Deixei vazio propositalmente para não causar erro. 
+        // O usuário deve inserir a chave no painel.
+        const DEFAULT_API_KEY = ""; 
+        const MODEL = "gemini-2.5-flash-preview-09-2025";
+        
+        // Elementos UI (Capturados de forma segura)
+        const getEl = (id) => document.getElementById(id);
+
+        // Inicialização Segura
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Sistema Iniciado.");
+            
+            // 1. Carregar Chave Salva
+            const savedKey = localStorage.getItem('geminiApiKey');
+            if (savedKey) {
+                getEl('customApiKey').value = savedKey;
+            } else if (DEFAULT_API_KEY) {
+                // Se tiver uma chave padrão no código (opcional)
+                getEl('customApiKey').value = DEFAULT_API_KEY;
+            } else {
+                // Se não tiver chave nenhuma, abre o painel
+                toggleSettings();
+            }
+
+            // 2. Event Listeners (Correção do Nome e Gráfico)
+            
+            // Sincronizar Nome
+            const nameInput = getEl('studentName');
+            nameInput.addEventListener('input', (e) => {
+                getEl('outName').innerText = e.target.value || "---";
+            });
+
+            // Atualizar Gráfico (Para todos os inputs de nível)
+            document.querySelectorAll('.input-level').forEach(input => {
+                input.addEventListener('input', updateGraph);
+            });
+
+            // 3. Configurar Upload de Arquivo
+            setupFileHandling();
+
+            // 4. Configurar Botões
+            getEl('btnGenerate').addEventListener('click', generateProtocol);
+            getEl('btnSaveKey').addEventListener('click', saveApiKey);
+        });
+
+        // Funções de UI
+        function toggleSettings() { getEl('settingsPanel').classList.toggle('hidden'); }
+        
+        function saveApiKey() {
+            const key = getEl('customApiKey').value.trim();
+            if (key) {
+                localStorage.setItem('geminiApiKey', key);
+                const status = getEl('keyStatus');
+                status.classList.remove('hidden');
+                setTimeout(() => status.classList.add('hidden'), 3000);
+            } else {
+                showError("Por favor, insira uma chave API.");
+            }
+        }
+
+        function updateGraph() {
+            getEl('outLv1').textContent = `N1: ${getEl('inLv1').value || 'Calma'}`;
+            getEl('outLv2').textContent = `N2: ${getEl('inLv2').value || 'Gatilho'}`;
+            getEl('outLv3').textContent = `N3: ${getEl('inLv3').value || 'Agitação'}`;
+            getEl('outLv4').textContent = `N4: ${getEl('inLv4').value || 'Aceleração'}`;
+            getEl('outLv5').textContent = `N5: ${getEl('inLv5').value || 'Pico'}`;
+        }
+
+        function showError(msg) {
+            const box = getEl('errorBox');
+            const txt = getEl('errorMsg');
+            txt.innerText = msg;
+            box.classList.remove('hidden');
+        }
+
+        // --- Lógica de Arquivos (CORRIGIDA) ---
+        function setupFileHandling() {
+            const dropZone = getEl('drop-zone');
+            const fileInput = getEl('fileInput');
+
+            // Clique na div abre o seletor
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            // Drag and Drop visual
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+            
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                if(e.dataTransfer.files.length > 0) processFiles(e.dataTransfer.files);
+            });
+
+            // Input Change
+            fileInput.addEventListener('change', (e) => {
+                if(e.target.files.length > 0) processFiles(e.target.files);
+            });
+        }
+
+        function processFiles(files) {
+            const textArea = getEl('evaluationContent');
+            const statusDiv = getEl('fileOk');
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+
+                // Lógica específica para .docx usando Mammoth
+                if (file.name.toLowerCase().endsWith('.docx')) {
+                    reader.onload = function(event) {
+                        const arrayBuffer = event.target.result;
+                        if (typeof mammoth === 'undefined') {
+                            showError("Erro: Biblioteca Mammoth não carregou. Verifique sua internet.");
+                            return;
+                        }
+                        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+                            .then(function(result) {
+                                textArea.value += `\n--- [ANEXO WORD: ${file.name}] ---\n${result.value}\n`;
+                                statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Arquivo Word processado!`;
+                                statusDiv.classList.remove('hidden');
+                            })
+                            .catch(function(err) {
+                                showError("Erro ao ler arquivo Word: " + err.message);
+                            });
+                    };
+                    reader.readAsArrayBuffer(file);
+                } 
+                // Lógica para arquivos de texto simples (.txt)
+                else if (file.name.toLowerCase().endsWith('.txt')) {
+                    reader.onload = function(event) {
+                        textArea.value += `\n--- [ANEXO TXT: ${file.name}] ---\n${event.target.result}\n`;
+                        statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Arquivo Texto processado!`;
+                        statusDiv.classList.remove('hidden');
+                    };
+                    reader.readAsText(file);
+                } else {
+                    showError("Formato não suportado. Use apenas .docx ou .txt");
+                }
+            });
+        }
+
+        // --- Lógica da IA ---
+        async function generateProtocol() {
+            const btn = getEl('btnGenerate');
+            const spinner = getEl('btnSpinner');
+            const txt = getEl('btnTxt');
+            
+            // 1. Validação
+            const apiKey = getEl('customApiKey').value || localStorage.getItem('geminiApiKey');
+            if (!apiKey) {
+                showError("ERRO: Nenhuma chave API configurada. Clique na chave no topo da tela.");
+                toggleSettings();
+                return;
+            }
+
+            const behaviors = {
+                l5: getEl('inLv5').value,
+                l4: getEl('inLv4').value,
+                l3: getEl('inLv3').value,
+                l2: getEl('inLv2').value,
+                l1: getEl('inLv1').value
+            };
+
+            if (!behaviors.l5 || !behaviors.l1) {
+                showError("Preencha pelo menos os comportamentos de Nível 1 (Calma) e Nível 5 (Pico).");
+                return;
+            }
+
+            // 2. UI Loading
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            txt.innerText = "IA Analisando dados...";
+            getEl('errorBox').classList.add('hidden');
+
+            // 3. Preparar Prompt
+            const report = getEl('evaluationContent').value;
+            
+            const systemPrompt = `Atue como um Especialista da Genial Care.
+            TOM DE VOZ: Acolhedor, simples ("a gente", "pra"), fluido e sem "titulês".
+            ESTRUTURA: Texto corrido, conectando as ideias.
+            TAREFA: Gere estratégias de manejo baseadas na curva de aceleração e no perfil da criança.
+            FORMATO JSON OBRIGATÓRIO: {"n5": "texto...", "n4": "texto...", "n3": "texto...", "n2": "texto...", "n1": "texto..."}`;
+
+            const userPrompt = `DADOS DO ALUNO: ${getEl('studentName').value}
+            RELATÓRIO CLÍNICO: ${report}
+            COMPORTAMENTOS DA CURVA:
+            N5 (Pico): ${behaviors.l5}
+            N4 (Aceleração): ${behaviors.l4}
+            N3 (Agitação): ${behaviors.l3}
+            N2 (Gatilho): ${behaviors.l2}
+            N1 (Calma): ${behaviors.l1}`;
+
+            // 4. Chamada Fetch
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userPrompt }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || "Erro na conexão com a IA");
+                }
+
+                const data = await response.json();
+                const jsonText = data.candidates[0].content.parts[0].text;
+                const result = JSON.parse(jsonText);
+
+                renderResults(behaviors, result);
+
+            } catch (error) {
+                console.error(error);
+                let msg = error.message;
+                if (msg.includes("API key")) msg = "Chave de API inválida. Verifique suas configurações.";
+                showError(msg);
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+                txt.innerText = "Gerar Protocolo Integrado";
+            }
+        }
+
+        function renderResults(behaviors, conducts) {
+            const levels = [
+                { id: 5, color: 'text-red-600', phase: 'Pico', beh: behaviors.l5, cond: conducts.n5 },
+                { id: 4, color: 'text-orange-500', phase: 'Aceleração', beh: behaviors.l4, cond: conducts.n4 },
+                { id: 3, color: 'text-yellow-600', phase: 'Agitação', beh: behaviors.l3, cond: conducts.n3 },
+                { id: 2, color: 'text-emerald-500', phase: 'Gatilho (Alerta)', beh: behaviors.l2, cond: conducts.n2 },
+                { id: 1, color: 'text-emerald-700', phase: 'Calma (Regulado)', beh: behaviors.l1, cond: conducts.n1 }
+            ];
+
+            const tbody = getEl('protocolContent');
+            tbody.innerHTML = levels.map(lv => `
+                <tr class="hover:bg-slate-50 transition-all">
+                    <td class="px-
