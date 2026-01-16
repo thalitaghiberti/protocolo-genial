@@ -63,9 +63,10 @@
 
         .behavior-text { font-size: 11px; font-weight: 800; font-family: 'Inter', sans-serif; }
         
+        /* Estilo para texto fluido e legível na tabela */
         .conduta-text { 
             line-height: 1.6;
-            color: #4A4A4A;
+            color: #334155;
             text-align: justify;
             font-size: 0.95rem;
         }
@@ -130,7 +131,7 @@
                     <h2 class="text-xs font-bold text-genial-purple uppercase tracking-widest mb-4 flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-genial-yellow"></span> 1. Identificação
                     </h2>
-                    <input type="text" id="studentName" placeholder="Nome da Criança" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-genial-purple/50 focus:border-genial-purple outline-none transition-all font-medium text-gray-700 placeholder-gray-400">
+                    <input type="text" id="studentName" oninput="syncName()" placeholder="Nome da Criança" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-genial-purple/50 focus:border-genial-purple outline-none transition-all font-medium text-gray-700 placeholder-gray-400">
                 </section>
 
                 <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -273,7 +274,7 @@
 
     <script>
         // Configuração da API
-        const BASE_API_KEY = "AIzaSyD67jBlJLlTdbEJatI9xCtcadG_Zk6IYcg"; 
+        const BASE_API_KEY = "AIzaSyDrKOOQAcsNLVZMfdV3v1jhovhAKnEA1Mc"; 
         const MODEL = "gemini-2.5-flash-preview-09-2025";
         
         // Elementos UI
@@ -425,25 +426,25 @@
             const systemPrompt = `Atue como um Especialista Clínico da Genial Care.
             
             MISSÃO:
-            Criar um protocolo de conduta técnica e acolhedora.
+            Criar um protocolo de conduta técnica e acolhedora, com foco na criança.
 
             TOM DE VOZ & ESTILO:
-            1. OBJETIVO E DIRETO: Use verbos no imperativo ("Faça", "Ofereça"). Diga o que deve ser feito, sem rodeios.
-            2. PRIMEIRA PESSOA DO PLURAL (NÓS): Use "Nós indicamos", "Recomendamos", para mostrar suporte clínico, mas mantenha o foco na ação.
-            3. MENOS INFORMAL: Evite excesso de "pra", "né", "tá". Use uma linguagem profissional e acessível (Brandbook "Técnico + Acolhedor").
-            4. FLUIDEZ: Texto corrido em um parágrafo por nível. Sem títulos em negrito ("Estratégia:"). Conecte as ações.
+            1. OBJETIVO E DIRETO (Instrucional): Use verbos no imperativo ("Faça", "Ofereça", "Revise"). Diga o que deve ser feito, sem introduções motivacionais ("Que alegria ver...").
+            2. MENOS INFORMAL: Evite excesso de "pra", "né", "tá", "a gente". Use uma linguagem profissional e acessível, em primeira pessoa do plural ocasional ou impessoal ("Recomendamos", "É importante").
+            3. FLUIDEZ: Texto corrido em um parágrafo por nível. Sem títulos em negrito ("Estratégia:"). Conecte as ações de forma lógica.
 
             INTEGRAÇÃO (CRUCIAL):
             - Leia o relatório (Vineland, SPM, ARSM, Fono).
             - Se a criança não fala (Fono), a conduta DEVE incluir suporte visual.
             - Se a criança busca sensação (TO), a conduta DEVE incluir atividade sensorial segura.
-            - Traduza termos técnicos: "Input proprioceptivo" -> "Atividade de força".
+            - Traduza termos técnicos: "Input proprioceptivo" -> "Atividade de força/pressão".
 
             SEGURANÇA:
             - ZERO contenção. Use "proteger", "garantir segurança".
 
             TAREFA:
-            Para cada nível, escreva um parágrafo claro e direto com as condutas integradas.
+            Para cada nível, escreva um parágrafo claro, direto e técnico (mas simples) com as condutas integradas.
+            Exemplo de tom desejado: "Ofereça estímulos sensoriais de regulação como brincadeiras de empurrar o sofá ou rolar no tapete, pois essa força ajuda a organizar internamente. Revise a rotina visual para que ele saiba o que vem a seguir."
             
             Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
