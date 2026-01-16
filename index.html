@@ -69,7 +69,7 @@
         <div id="settingsPanel" class="hidden no-print mb-6 p-6 bg-indigo-900 text-white rounded-xl shadow-inner relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-lock text-6xl"></i></div>
             <h3 class="text-sm font-bold uppercase mb-2 flex items-center gap-2"><i class="fas fa-shield-alt"></i> Configuração de Acesso</h3>
-            <p class="text-xs opacity-80 mb-4 max-w-lg">A chave de API do sistema já está configurada. Se precisar substituir, use o campo abaixo.</p>
+            <p class="text-xs opacity-80 mb-4 max-w-lg">A chave de API já está configurada no sistema. Se precisar substituir, use o campo abaixo.</p>
             
             <div class="flex gap-2 max-w-2xl">
                 <input type="password" id="customApiKey" placeholder="Sua chave API (opcional)..." class="flex-1 p-3 bg-indigo-950/50 border border-indigo-700 rounded-lg text-sm text-white placeholder-indigo-400 outline-none focus:border-indigo-400 transition-all">
@@ -109,7 +109,7 @@
                         <input type="file" id="fileInput" class="hidden" accept=".docx,.txt" multiple>
                     </div>
 
-                    <textarea id="evaluationContent" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" rows="5" placeholder="Ou cole o conteúdo do relatório aqui. A IA buscará automaticamente dados de Vineland, Perfil Sensorial e ARSM."></textarea>
+                    <textarea id="evaluationContent" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" rows="5" placeholder="Ou cole o conteúdo do relatório aqui. A IA buscará automaticamente dados de Fono, TO, ABA e Psicologia."></textarea>
                     <div id="fileOk" class="hidden mt-2 flex items-center gap-2 text-[10px] text-emerald-600 font-bold uppercase">
                         <i class="fas fa-check-circle"></i> Documento Carregado
                     </div>
@@ -246,7 +246,7 @@
         const customApiKeyInput = document.getElementById('customApiKey');
         const keyStatus = document.getElementById('keyStatus');
 
-        // Inicialização: Verifica Chave Fixa ou LocalStorage
+        // Inicialização: Se tem chave fixa, nem verifica o localStorage
         window.addEventListener('load', () => {
             if (BASE_API_KEY) {
                 console.log("Sistema pronto para uso.");
@@ -377,40 +377,34 @@
             btnGenerate.disabled = true;
             closeError();
 
-            // SYSTEM PROMPT: BASEADO NO GUIA ARSM E INTEGRAÇÃO DE AVALIAÇÕES (Foco em Manejo)
-            const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico.
+            // SYSTEM PROMPT: REFINADO PARA LINGUAGEM CLARA E INTEGRAÇÃO MULTIDISCIPLINAR
+            const systemPrompt = `Atue como um Especialista em Desenvolvimento Neurobiológico com visão Multidisciplinar (Fono, TO, ABA, Psico).
             
-            DIRETRIZES DE ESTILO:
-            1. SEJA CLARO E OBJETIVO: Use verbos no imperativo e listas. Use linguagem acessível a pais e não-especialistas (ex: em vez de "desregulação proprioceptiva", use "precisa sentir o corpo").
-            2. TOM TÉCNICO MAS ACESSÍVEL: Prescreva condutas práticas de manejo.
-            
-            RESTRIÇÕES CRÍTICAS (SEGURANÇA E ÉTICA):
-            - PROIBIDO usar a palavra "contenção".
-            - PROIBIDO sugerir intervenções de contenção física ou restrição de movimento forçada.
-            - Em situações de crise (Nível 5), priorize: segurança do ambiente, retirada de estímulos, proteção física (barreiras moles, afastamento de objetos) e co-regulação.
-            - FOCO EXCLUSIVO EM MANEJO: Não sugira "ensinar" habilidades novas (ex: "ensinar a amarrar sapato" ou "treinar fala"). Foque apenas no que o adulto deve fazer no MOMENTO do comportamento para regular a criança.
+            MISSÃO:
+            Criar um plano de manejo para momentos de crise e regulação, traduzindo termos técnicos para uma linguagem simples e acessível que qualquer pai ou professor consiga executar.
 
-            BASE DE CONHECIMENTO INTEGRADA:
-            Você deve cruzar os dados do RELATÓRIO MULTIDISCIPLINAR (que pode conter Vineland, SPM, ARSM, Perfil Sensorial) com o Guia ARSM para gerar condutas personalizadas.
-            
-            1. INTEGRAÇÃO DE DADOS (Buscar no texto do relatório):
-               - COMUNICAÇÃO (Vineland/Fono): Se a criança não fala, o manejo deve ser visual/gestual. Não peça para ela "falar o que sente" na crise.
-               - SENSORIAL (SPM/ARSM): Se houver hipersensibilidade auditiva, o manejo deve ser silencioso. Se houver busca proprioceptiva, oferecer pressão.
-               - EMOCIONAL (Psico): Se houver rigidez, o manejo deve focar em previsibilidade e não em flexibilização no momento da crise.
+            DIRETRIZES DE TRADUÇÃO (LINGUAGEM ACESSÍVEL):
+            - Em vez de "Input proprioceptivo", use: "Atividades de força ou pressão (como empurrar parede, carregar peso)".
+            - Em vez de "Rigidez de práxis", use: "Dificuldade em mudar a ideia ou ação".
+            - Em vez de "Déficit comunicativo", use: "Dificuldade em falar ou entender o que foi dito".
+            - Em vez de "Desregulação vestibular", use: "O corpo precisa de movimento ou pausa".
 
-            2. GUIA ARSM (Referência de Condutas se identificado na avaliação):
-               - PRÁXIS: Dificuldade motora -> Modelos, reforço diferencial, passo a passo visual.
-               - SISTEMA ORAL: Busca -> Mordedores/canudos. Hiper -> Evitar estímulos, histórias sociais.
-               - AUDITIVO: Hipo -> Estímulos intensos. Hiper -> Controle do som, fones, previsibilidade.
-               - PROPRIOCEPTIVO: Busca -> Trabalho pesado. Fraqueza -> Suporte proximal.
-               - TÁTIL: Hipo -> Dicas visuais, tato profundo. Hiper -> Respeitar limites, toque firme (não leve), previsibilidade.
-               - VISUAL: Hiper -> Óculos, cabana, ajustar luz. Hipo -> Estímulos visuais intensos/funcionais.
-               - VESTIBULAR: Busca -> Movimento funcional. Insegurança -> Apoio firme, chão.
+            INTEGRAÇÃO MULTIDISCIPLINAR (CRUCIAL):
+            1. FONOAUDIOLOGIA / CAA:
+               - Se o relatório indicar uso de CAA ou pouca fala (como Valentim), as condutas DEVEM incluir: "Use gestos", "Mostre a figura (CAA)", "Fale pouco". Não exija fala na crise.
+            2. TERAPIA OCUPACIONAL (ARSM/SPM):
+               - Se houver busca sensorial: Ofereça a sensação de forma segura (ex: morder colar em vez da mão).
+               - Se houver hipersensibilidade: Remova o estímulo (ex: diminuir barulho).
+            3. ABA / COMPORTAMENTO:
+               - Função: Entenda o porquê (fuga, sensorial, acesso).
+               - Antecedente: Dê previsibilidade visual antes da mudança.
 
-            TAREFA:
-            Analise o RELATÓRIO COMPLETO e os SINAIS DA CURVA.
-            Gere um protocolo prático integrando essas descobertas.
-            
+            RESTRIÇÕES DE SEGURANÇA:
+            - NUNCA use a palavra "contenção".
+            - NUNCA sugira segurar a criança à força. Use "proteger", "dar espaço", "retirar objetos perigosos".
+
+            ESTRUTURA DA RESPOSTA (JSON):
+            Gere condutas práticas para cada nível.
             Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
             const userPrompt = `RELATÓRIO MULTIDISCIPLINAR:\n${evaluation}\n\nSINAIS COMPORTAMENTAIS NA CURVA:\nN5 (Pico): ${behaviors.l5}\nN4 (Aceleração): ${behaviors.l4}\nN3 (Agitação): ${behaviors.l3}\nN2 (Gatilho): ${behaviors.l2}\nN1 (Calma): ${behaviors.l1}`;
