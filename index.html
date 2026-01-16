@@ -232,7 +232,7 @@
 
     <script>
         // Configuração da API
-        const BASE_API_KEY = "AIzaSyD67jBlJLlTdbEJatI9xCtcadG_Zk6IYcg"; 
+        const BASE_API_KEY = ""; 
         const MODEL = "gemini-2.5-flash-preview-09-2025";
         
         // Elementos UI
@@ -381,7 +381,7 @@
             btnGenerate.disabled = true;
             closeError();
 
-            // SYSTEM PROMPT: BASEADO NO BRANDBOOK GENIAL CARE
+            // SYSTEM PROMPT: BASEADO NO BRANDBOOK GENIAL CARE & GUIA DE ESTILO
             const systemPrompt = `Atue como um Especialista da Genial Care.
 
             PERSONALIDADE E TOM DE VOZ (BRANDBOOK):
@@ -389,13 +389,16 @@
             2. EXPLICATIVO & SIMPLES: "Traduzir" a ciência. Sem termos técnicos difíceis.
             3. HABILIDOSO: Dê dicas práticas que funcionam na vida real.
             4. EMPOLGADO: Texto com energia (sem exageros), motivador.
-            5. FLUIDEZ TOTAL: Escreva um único parágrafo fluido por nível. Não use tópicos numerados, bullet points ou títulos como "Estratégia:". O texto deve fluir como uma conversa natural.
+            5. FLUIDEZ TOTAL (CRUCIAL): Escreva um único parágrafo fluido por nível. 
+               - NÃO USE TÍTULOS como "1. Regulação:" ou "Estratégia:".
+               - Comece direto com o verbo: "Ofereça...", "Organize...", "Garanta...".
+               - Conecte as frases: "Além disso...", "Para ajudar...", "Também é importante...".
 
             VOCABULÁRIO ESPECÍFICO (EVITE vs PREFIRA):
             - EVITE: "Paciente" (use Criança/Nome), "Indivíduo", "Birra" (use Crise/Desafio), "Tratamento" (use Intervenção), "Sintomas" (use Sinais), "Portador", "Doença".
             - PREFIRA: "Sinais", "Intervenção", "Crise", "A gente".
 
-            SIMPLIFICAÇÃO TÉCNICA (EXEMPLOS):
+            SIMPLIFICAÇÃO TÉCNICA (TRADUÇÃO):
             - "Input proprioceptivo" -> "Atividades de força (empurrar/puxar) para sentir o corpo".
             - "Regulação vestibular" -> "Atividades de movimento ou pausa para acalmar".
             - "Rigidez de práxis" -> "Dificuldade em mudar o jeito de fazer as coisas".
