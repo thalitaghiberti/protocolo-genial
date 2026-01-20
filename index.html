@@ -66,7 +66,7 @@
         /* Estilo para texto fluido e legível na tabela */
         .conduta-text { 
             line-height: 1.6;
-            color: #4A4A4A;
+            color: #334155;
             text-align: justify;
             font-size: 0.95rem;
         }
@@ -207,7 +207,7 @@
                         </button>
                     </div>
 
-                    <!-- Gráfico da Curva (Ajustado) -->
+                    <!-- Gráfico da Curva -->
                     <div class="mb-10 bg-[#FCFCFD] p-6 rounded-2xl border border-gray-100 relative">
                         <div class="absolute top-4 left-4 flex gap-2">
                              <div class="w-3 h-3 rounded-full bg-genial-purple"></div>
@@ -274,7 +274,7 @@
 
     <script>
         // Configuração da API
-        const BASE_API_KEY = "AIzaSyD51VmH84ggfq9B_PD77nlTB-lkw3RnZzo"; 
+        const BASE_API_KEY = "AIzaSyD67jBlJLlTdbEJatI9xCtcadG_Zk6IYcg"; 
         const MODEL = "gemini-2.5-flash-preview-09-2025";
         
         // Elementos UI
@@ -428,23 +428,25 @@
             MISSÃO:
             Criar um protocolo de conduta técnica e acolhedora, com foco na criança.
 
-            TOM DE VOZ & ESTILO:
-            1. OBJETIVO E DIRETO (Instrucional): Use verbos no imperativo ("Faça", "Ofereça", "Revise"). Diga o que deve ser feito, sem introduções motivacionais ("Que alegria ver...").
-            2. MENOS INFORMAL: Evite excesso de "pra", "né", "tá", "a gente". Use uma linguagem profissional e acessível, em primeira pessoa do plural ocasional ou impessoal ("Recomendamos", "É importante").
-            3. FLUIDEZ: Texto corrido em um parágrafo por nível. Sem títulos em negrito ("Estratégia:"). Conecte as ações de forma lógica.
+            TOM DE VOZ & ESTILO (Direto e Instrucional):
+            1. OBJETIVO E DIRETO: Use verbos no imperativo ("Faça", "Ofereça", "Revise"). A instrução é para quem aplica (pais/escola).
+            2. ZERO "CONVERSA": Evite introduções como "Que alegria...", "Sabemos que é difícil...". Vá direto para o que deve ser feito.
+            3. SEM JARGÃO: Use linguagem natural. Em vez de "input proprioceptivo", use "atividades de força".
+            4. FLUIDEZ: Texto corrido, sem títulos em negrito ("Estratégia:"). Conecte as ações de forma lógica e sequencial.
 
-            INTEGRAÇÃO (CRUCIAL):
-            - Leia o relatório (Vineland, SPM, ARSM, Fono).
-            - Se a criança não fala (Fono), a conduta DEVE incluir suporte visual.
-            - Se a criança busca sensação (TO), a conduta DEVE incluir atividade sensorial segura.
-            - Traduza termos técnicos: "Input proprioceptivo" -> "Atividade de força/pressão".
+            INTEGRAÇÃO (O Segredo):
+            - Fono/CAA: Se o relatório diz que usa CAA, a conduta de crise TEM QUE SER visual.
+            - Sensorial: Se busca sensação, ofereça recurso seguro (mordedor, pular). Se evita, proteja (diminuir luz/som).
+            - Comportamento: Antecipe com rotina visual.
 
             SEGURANÇA:
-            - ZERO contenção. Use "proteger", "garantir segurança".
+            - ZERO contenção. Use "proteger", "garantir segurança", "afastar perigos".
+
+            EXEMPLO DE TEXTO ESPERADO:
+            "Ofereça estímulos sensoriais de regulação como brincadeiras de empurrar o sofá ou rolar no tapete, pois essa força ajuda a organizar internamente. Revise a rotina visual para que ele saiba o que vem a seguir, garantindo que o planejamento motor e a previsibilidade o ajudem a se sentir seguro."
 
             TAREFA:
             Para cada nível, escreva um parágrafo claro, direto e técnico (mas simples) com as condutas integradas.
-            Exemplo de tom desejado: "Ofereça estímulos sensoriais de regulação como brincadeiras de empurrar o sofá ou rolar no tapete, pois essa força ajuda a organizar internamente. Revise a rotina visual para que ele saiba o que vem a seguir."
             
             Retorne APENAS JSON: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
