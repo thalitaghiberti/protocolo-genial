@@ -127,7 +127,7 @@
                             <input type="text" id="inLv3" class="w-full p-2 border-b-2 border-slate-100 focus:border-yellow-600 outline-none transition-all text-sm input-level" placeholder="Ex: Recusa">
                         </div>
                         <div class="group">
-                            <label class="block text-[9px] font-black text-emerald-500 uppercase mb-1">Nível 2 - Gatilho (Alerta)</label>
+                            <label class="block text-[9px] font-black text-emerald-500 uppercase mb-1">Nível 2 - Sinais de Alerta</label>
                             <input type="text" id="inLv2" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-500 outline-none transition-all text-sm input-level" placeholder="Ex: Estereotipias">
                         </div>
                         <div class="group">
@@ -178,7 +178,7 @@
                                 <circle cx="650" cy="30" r="8" fill="#ef4444" stroke="#fff" stroke-width="2" />
 
                                 <text x="65" y="275" id="outLv1" class="behavior-text" fill="#15803d">N1: Calma</text>
-                                <text x="215" y="235" id="outLv2" class="behavior-text" fill="#22c55e">N2: Gatilho</text>
+                                <text x="215" y="235" id="outLv2" class="behavior-text" fill="#22c55e">N2: Alerta</text>
                                 <text x="365" y="155" id="outLv3" class="behavior-text" fill="#ca8a04">N3: Agitação</text>
                                 <text x="515" y="85" id="outLv4" class="behavior-text" fill="#ea580c">N4: Aceleração</text>
                                 <text x="665" y="35" id="outLv5" class="behavior-text" fill="#b91c1c">N5: Pico</text>
@@ -260,7 +260,7 @@
 
         function updateGraph() {
             getEl('outLv1').textContent = `N1: ${getEl('inLv1').value || 'Calma'}`;
-            getEl('outLv2').textContent = `N2: ${getEl('inLv2').value || 'Gatilho'}`;
+            getEl('outLv2').textContent = `N2: ${getEl('inLv2').value || 'Alerta'}`;
             getEl('outLv3').textContent = `N3: ${getEl('inLv3').value || 'Agitação'}`;
             getEl('outLv4').textContent = `N4: ${getEl('inLv4').value || 'Aceleração'}`;
             getEl('outLv5').textContent = `N5: ${getEl('inLv5').value || 'Pico'}`;
@@ -351,27 +351,36 @@
 
             btn.disabled = true;
             spinner.classList.remove('hidden');
-            txt.innerText = "Processando com Tom Clínico e Diretivo...";
+            txt.innerText = "Processando com Tom Clínico...";
             getEl('errorBox').classList.add('hidden');
 
             const report = getEl('evaluationContent').value;
             
-            // --- NOVO SYSTEM PROMPT DIRETIVO ---
+            // --- SYSTEM PROMPT ATUALIZADO (REGRAS CLÍNICAS RÍGIDAS) ---
             const systemPrompt = `Você é um Analista do Comportamento e Supervisor Clínico.
             
-            OBJETIVO: Gerar condutas de manejo comportamental baseadas em dados clínicos.
+            OBJETIVO: Gerar condutas de manejo comportamental clínico e direto.
             
-            ESTILO DE TEXTO E TOM DE VOZ:
-            - DIRETIVO E IMPERATIVO: Comece todas as frases com VERBOS DE AÇÃO (Ex: Ofertar, Realizar, Garantir, Reduzir, Modelar).
-            - CONCISO: Remova conectivos desnecessários como "A gente", "É importante", "Nesta fase", "Busca-se". Vá direto ao ponto.
-            - TÉCNICO E PRÁTICO: Use termos técnicos quando necessário (CAA, propriocepção, co-regulação), mas focados na aplicação prática imediata.
+            REGRAS OBRIGATÓRIAS DE VOCABULÁRIO E ABORDAGEM:
+            1. SENSORIAL:
+               - PROIBIDO: Fazer perguntas para a criança em momento de crise ("Você quer abraço?").
+               - OBRIGATÓRIO: Descrever a atividade concreta a ser ofertada/realizada. Exemplo: "Ofertar atividades de pressão profunda (abraço forte), impacto (pular) ou movimento rítmico."
             
-            EXEMPLO DE TRANSFORMAÇÃO:
-            - NÃO FAÇA ISSO: "Aproveitar o momento de Calma... a gente usa essa fase para carregar o tanque. O foco é maximizar o uso do CAA."
-            - FAÇA ISSO: "Modelar uso do CAA consistentemente. Ofertar atividades de input proprioceptivo (empurrar, carregar peso). Garantir pareamento positivo com a equipe."
+            2. COMUNICAÇÃO (CAA):
+               - PROIBIDO: Usar o CAA para "checar" ou "testar" ("Usar CAA para checar se ele quer sair").
+               - OBRIGATÓRIO: O CAA é um direito e função. Use: "Modelar uso do CAA", "Ofertar escolha funcional via CAA", "Dar voz à criança via CAA".
+            
+            3. TERMOS BANIDOS:
+               - "Gatilho" (Use: Sinal de alerta, Antecedente, Indicador).
+               - "A gente" (Use impessoal ou imperativo).
+               - "Birra".
+            
+            4. ESTILO DE TEXTO:
+               - IMPERATIVO E DIRETO: Comece frases com verbos (Ofertar, Garantir, Reduzir, Modelar).
+               - SEM FLUFF: Remova introduções como "Nesta fase é importante...". Vá direto à conduta.
 
             TAREFA:
-            Para cada nível da curva (N1 a N5), gere um parágrafo único, fluido, mas composto por orações imperativas e diretas.
+            Para cada nível da curva (N1 a N5), gere um parágrafo único, composto por instruções diretas.
             
             FORMATO JSON OBRIGATÓRIO: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
@@ -381,7 +390,7 @@
             N5 (Pico): ${behaviors.l5}
             N4 (Aceleração): ${behaviors.l4}
             N3 (Agitação): ${behaviors.l3}
-            N2 (Gatilho): ${behaviors.l2}
+            N2 (Sinais de Alerta): ${behaviors.l2}
             N1 (Calma): ${behaviors.l1}`;
 
             try {
@@ -423,7 +432,7 @@
                 { id: 5, color: 'text-red-600', phase: 'Pico', beh: behaviors.l5, cond: conducts.n5 },
                 { id: 4, color: 'text-orange-500', phase: 'Aceleração', beh: behaviors.l4, cond: conducts.n4 },
                 { id: 3, color: 'text-yellow-600', phase: 'Agitação', beh: behaviors.l3, cond: conducts.n3 },
-                { id: 2, color: 'text-emerald-500', phase: 'Gatilho (Alerta)', beh: behaviors.l2, cond: conducts.n2 },
+                { id: 2, color: 'text-emerald-500', phase: 'Sinais de Alerta', beh: behaviors.l2, cond: conducts.n2 },
                 { id: 1, color: 'text-emerald-700', phase: 'Calma (Regulado)', beh: behaviors.l1, cond: conducts.n1 }
             ];
 
