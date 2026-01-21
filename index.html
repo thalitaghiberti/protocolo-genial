@@ -219,7 +219,8 @@
 
     <script>
         // --- CONFIGURAÇÃO DA CHAVE API ---
-        const DEFAULT_API_KEY = "AIzaSyD51VmH84ggfq9B_PD77nlTB-lkw3RnZzo"; 
+        // NOVA CHAVE INSERIDA ABAIXO
+        const DEFAULT_API_KEY = "AIzaSyBamvmsKOwzfG0BPznqGeyAkhx7hQx321g"; 
         const MODEL = "gemini-2.5-flash-preview-09-2025";
         
         // Elementos UI (Capturados de forma segura)
@@ -229,9 +230,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log("Sistema Iniciado.");
             
-            // 1. Carregar Chave
-            // Prioridade: Chave Fixa no Código > LocalStorage
+            // 1. Carregar Chave (FORÇAR A NOVA CHAVE)
             if (DEFAULT_API_KEY) {
+                // Atualiza o localStorage para remover chaves antigas com erro
+                localStorage.setItem('geminiApiKey', DEFAULT_API_KEY);
                 getEl('customApiKey').value = DEFAULT_API_KEY;
             } else {
                 const savedKey = localStorage.getItem('geminiApiKey');
