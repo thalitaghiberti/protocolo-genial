@@ -40,10 +40,10 @@
         .behavior-text { font-size: 10px; font-weight: 700; }
         
         .conduta-text { 
-            line-height: 1.5;
+            line-height: 1.6;
             color: #1e293b;
             text-align: left;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -56,7 +56,7 @@
                 <div class="bg-indigo-600 p-2 rounded-lg text-white">
                     <i class="fas fa-file-medical-alt"></i>
                 </div>
-                <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Versão Clínica</span></h1>
+                <h1 class="text-xl font-extrabold tracking-tight text-indigo-950 uppercase">Manejo.IA <span class="text-xs font-normal opacity-70 ml-2 normal-case">Versão Educativa & Clínica</span></h1>
             </div>
             <div class="flex gap-3">
                 <button onclick="toggleSettings()" class="text-slate-400 hover:text-indigo-600 transition-all p-2 bg-white rounded-full shadow-sm" title="Configurar Chave API">
@@ -116,23 +116,23 @@
                     <div class="space-y-4">
                         <div class="group">
                             <label class="block text-[9px] font-black text-red-600 uppercase mb-1">Nível 5 - Pico</label>
-                            <input type="text" id="inLv5" class="w-full p-2 border-b-2 border-slate-100 focus:border-red-600 outline-none transition-all text-sm input-level" placeholder="Ex: Agressividade">
+                            <input type="text" id="inLv5" class="w-full p-2 border-b-2 border-slate-100 focus:border-red-600 outline-none transition-all text-sm input-level" placeholder="Ex: Agressividade, bater">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-orange-500 uppercase mb-1">Nível 4 - Aceleração</label>
-                            <input type="text" id="inLv4" class="w-full p-2 border-b-2 border-slate-100 focus:border-orange-500 outline-none transition-all text-sm input-level" placeholder="Ex: Gritos">
+                            <input type="text" id="inLv4" class="w-full p-2 border-b-2 border-slate-100 focus:border-orange-500 outline-none transition-all text-sm input-level" placeholder="Ex: Gritos, jogar objetos">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-yellow-600 uppercase mb-1">Nível 3 - Agitação</label>
-                            <input type="text" id="inLv3" class="w-full p-2 border-b-2 border-slate-100 focus:border-yellow-600 outline-none transition-all text-sm input-level" placeholder="Ex: Recusa">
+                            <input type="text" id="inLv3" class="w-full p-2 border-b-2 border-slate-100 focus:border-yellow-600 outline-none transition-all text-sm input-level" placeholder="Ex: Recusa, aumento motor">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-emerald-500 uppercase mb-1">Nível 2 - Sinais de Alerta</label>
-                            <input type="text" id="inLv2" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-500 outline-none transition-all text-sm input-level" placeholder="Ex: Estereotipias">
+                            <input type="text" id="inLv2" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-500 outline-none transition-all text-sm input-level" placeholder="Ex: Estereotipias, isolamento">
                         </div>
                         <div class="group">
                             <label class="block text-[9px] font-black text-emerald-700 uppercase mb-1">Nível 1 - Calma (Regulado)</label>
-                            <input type="text" id="inLv1" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-700 outline-none transition-all text-sm input-level" placeholder="Ex: Engajado">
+                            <input type="text" id="inLv1" class="w-full p-2 border-b-2 border-slate-100 focus:border-emerald-700 outline-none transition-all text-sm input-level" placeholder="Ex: Engajado, interativo">
                         </div>
                     </div>
 
@@ -191,7 +191,7 @@
                             <thead class="bg-indigo-950">
                                 <tr>
                                     <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-200 uppercase tracking-widest">Comportamento</th>
-                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-100 uppercase tracking-widest bg-indigo-900">Conduta (Ação Direta)</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-indigo-100 uppercase tracking-widest bg-indigo-900">Conduta Educativa e Manejo</th>
                                 </tr>
                             </thead>
                             <tbody id="protocolContent" class="bg-white divide-y divide-slate-100">
@@ -351,36 +351,41 @@
 
             btn.disabled = true;
             spinner.classList.remove('hidden');
-            txt.innerText = "Processando com Tom Clínico...";
+            txt.innerText = "Processando Estratégias...";
             getEl('errorBox').classList.add('hidden');
 
             const report = getEl('evaluationContent').value;
             
-            // --- SYSTEM PROMPT ATUALIZADO (REGRAS CLÍNICAS RÍGIDAS) ---
+            // --- SYSTEM PROMPT ATUALIZADO (BLINDADO E EDUCATIVO) ---
             const systemPrompt = `Você é um Analista do Comportamento e Supervisor Clínico.
             
-            OBJETIVO: Gerar condutas de manejo comportamental clínico e direto.
-            
-            REGRAS OBRIGATÓRIAS DE VOCABULÁRIO E ABORDAGEM:
-            1. SENSORIAL:
-               - PROIBIDO: Fazer perguntas para a criança em momento de crise ("Você quer abraço?").
-               - OBRIGATÓRIO: Descrever a atividade concreta a ser ofertada/realizada. Exemplo: "Ofertar atividades de pressão profunda (abraço forte), impacto (pular) ou movimento rítmico."
-            
-            2. COMUNICAÇÃO (CAA):
-               - PROIBIDO: Usar o CAA para "checar" ou "testar" ("Usar CAA para checar se ele quer sair").
-               - OBRIGATÓRIO: O CAA é um direito e função. Use: "Modelar uso do CAA", "Ofertar escolha funcional via CAA", "Dar voz à criança via CAA".
-            
-            3. TERMOS BANIDOS:
-               - "Gatilho" (Use: Sinal de alerta, Antecedente, Indicador).
-               - "A gente" (Use impessoal ou imperativo).
-               - "Birra".
-            
-            4. ESTILO DE TEXTO:
-               - IMPERATIVO E DIRETO: Comece frases com verbos (Ofertar, Garantir, Reduzir, Modelar).
-               - SEM FLUFF: Remova introduções como "Nesta fase é importante...". Vá direto à conduta.
+            OBJETIVO: Gerar condutas de manejo que sejam claras, educativas e práticas para pais e terapeutas.
 
+            REGRAS CRÍTICAS DE SEGURANÇA (LEIA COM ATENÇÃO):
+            - PROIBIÇÃO TOTAL DE CONTENÇÃO: NUNCA, em hipótese alguma, sugira "contenção", "segurar a criança", "imobilizar" ou "toque restritivo".
+            - ALTERNATIVA SEGURA: Em caso de agressão ou risco (N5), sugira APENAS "Manejo Ambiental", "Bloqueio Visual" (almofada) ou "Esquiva/Afastamento".
+
+            REGRAS DE VOCABULÁRIO:
+            1. TERMOS TÉCNICOS + EXPLICAÇÃO: Sempre que usar um termo técnico, explique o que é entre parênteses para um leigo.
+               - Ex: "propriocepção (sensação de força no corpo)".
+            
+            2. EXEMPLOS CONCRETOS (OBRIGATÓRIO): Para toda sugestão sensorial, dê 2 exemplos.
+               - Ex: "...atividades de pressão profunda, como 'cabo de guerra' ou 'empurrar a parede'."
+
+            3. TERMOS PROIBIDOS:
+               - "A gente" (Use imperativo).
+               - "Gatilho" (Use: Sinal de alerta, Antecedente).
+               - "Birra".
+
+            4. ESTRUTURA DO TEXTO:
+               - Comece com o verbo no imperativo.
+               - Seja instrutivo.
+
+            5. CAA (COMUNICAÇÃO):
+               - Nunca use para "checar". Use para "dar voz" e "oferecer escolha".
+            
             TAREFA:
-            Para cada nível da curva (N1 a N5), gere um parágrafo único, composto por instruções diretas.
+            Gere um texto fluido e prático para cada nível (N1 a N5).
             
             FORMATO JSON OBRIGATÓRIO: {"n5": "...", "n4": "...", "n3": "...", "n2": "...", "n1": "..."}`;
 
